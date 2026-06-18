@@ -1,0 +1,1510 @@
+     1→     1→'use client'
+     2→     2→
+     3→     3→import { useState, useEffect, useCallback } from 'react'
+     4→     4→
+     5→     5→// ============================================================
+     6→     6→// TYPES
+     7→     7→// ============================================================
+     8→     8→interface NavItem { id: string; label: string; url: string; order: number; active: boolean; target: string }
+     9→     9→interface NewsItem { id: string; title: string; slug: string; summary?: string; content: string; image?: string; featured: boolean; published: boolean; publishedAt?: string; createdAt: string; updatedAt: string }
+    10→    10→interface AwardCategory { id: string; title: string; slug: string; description?: string; icon?: string; image?: string; order: number; active: boolean; criteria?: string; createdAt: string; updatedAt: string }
+    11→    11→interface VolunteerField { id: string; title: string; slug: string; description?: string; icon?: string; image?: string; order: number; active: boolean; createdAt: string; updatedAt: string }
+    12→    12→interface Step { id: string; title: string; description?: string; icon?: string; order: number; active: boolean; createdAt: string; updatedAt: string }
+    13→    13→interface Partner { id: string; name: string; logo: string; url?: string; order: number; active: boolean; type: string; createdAt: string; updatedAt: string }
+    14→    14→interface HeroSlide { id: string; title: string; subtitle?: string; image: string; link?: string; linkText?: string; order: number; active: boolean; createdAt: string; updatedAt: string }
+    15→    15→interface Statistic { id: string; label: string; value: string; icon?: string; order: number }
+    16→    16→interface SocialLink { id: string; platform: string; url: string; icon?: string; order: number; active: boolean }
+    17→    17→interface AboutSection { id: string; title: string; content: string; image?: string; order: number; active: boolean; createdAt: string; updatedAt: string }
+    18→    18→interface SiteSetting { id: string; key: string; value: string; group: string; label: string; type: string }
+    19→    19→interface PageItem { id: string; title: string; slug: string; content: string; builderData?: string; published: boolean; order: number; template: string; createdAt: string; updatedAt: string }
+    20→    20→interface EventItem { id: string; title: string; slug: string; description?: string; content?: string; image?: string; location?: string; startDate: string; published: boolean; createdAt: string; updatedAt: string }
+    21→    21→interface ContactMessage { id: string; name: string; email: string; phone?: string; subject?: string; message: string; read: boolean; replied: boolean; createdAt: string }
+    22→    22→interface MediaItem { id: string; name: string; url: string; type: string; alt?: string; folder?: string; createdAt: string }
+    23→    23→interface UserItem { id: string; email: string; name: string; role: string; active: boolean; createdAt: string; updatedAt: string }
+    24→    24→interface BuilderBlock { id: string; type: string; content: string; properties: Record<string, unknown>; children?: BuilderBlock[]; order: number }
+    25→    25→
+    26→    26→type AdminView = 'dashboard' | 'pages' | 'news' | 'categories' | 'volunteer-fields' | 'events' | 'partners' | 'media' | 'settings' | 'users' | 'messages' | 'navigation' | 'hero-slides' | 'steps' | 'builder' | 'statistics' | 'social-links' | 'about-sections'
+    27→    27→
+    28→    28→// ============================================================
+    29→    29→// API HELPER
+    30→    30→// ============================================================
+    31→    31→async function apiFetch(collection: string, options?: RequestInit & { params?: Record<string, string> }) {
+    32→    32→  const url = `/api/${collection}`
+    33→    33→  const res = await fetch(url, {
+    34→    34→    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    35→    35→    ...options,
+    36→    36→  })
+    37→    37→  if (!res.ok) throw new Error(`API error: ${res.status}`)
+    38→    38→  return res.json()
+    39→    39→}
+    40→    40→
+    41→    41→// ============================================================
+    42→    42→// ICONS (inline SVGs to avoid dependency issues)
+    43→    43→// ============================================================
+    44→    44→function Icons({ name, className = "w-5 h-5" }: { name: string; className?: string }) {
+    45→    45→  const icons: Record<string, JSX.Element> = {
+    46→    46→    home: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>,
+    47→    47→    newspaper: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>,
+    48→    48→    trophy: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>,
+    49→    49→    users: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
+    50→    50→    heart: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>,
+    51→    51→    settings: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+    52→    52→    calendar: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
+    53→    53→    image: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
+    54→    54→    mail: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>,
+    55→    55→    menu: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>,
+    56→    56→    link: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>,
+    57→    57→    edit: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>,
+    58→    58→    trash: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>,
+    59→    59→    plus: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>,
+    60→    60→    x: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>,
+    61→    61→    chevronLeft: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>,
+    62→    62→    chevronRight: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>,
+    63→    63→    search: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
+    64→    64→    lock: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>,
+    65→    65→    layout: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" /></svg>,
+    66→    66→    eye: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>,
+    67→    67→    barChart: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>,
+    68→    68→    globe: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>,
+    69→    69→    save: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>,
+    70→    70→    logout: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>,
+    71→    71→    dashboard: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>,
+    72→    72→    handHeart: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" /></svg>,
+    73→    73→    facebook: <svg className={className} fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>,
+    74→    74→    twitter: <svg className={className} fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>,
+    75→    75→    instagram: <svg className={className} fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>,
+    76→    76→    youtube: <svg className={className} fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>,
+    77→    77→    linkedin: <svg className={className} fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>,
+    78→    78→    code: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>,
+    79→    79→    arrowLeft: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>,
+    80→    80→    check: <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>,
+    81→    81→  }
+    82→    82→  return icons[name] || <span className={className}>?</span>
+    83→    83→}
+    84→    84→
+    85→    85→// ============================================================
+    86→    86→// PUBLIC WEBSITE COMPONENTS
+    87→    87→// ============================================================
+    88→    88→
+    89→    89→function PublicHeader({ navigation, onAdminClick }: { navigation: NavItem[]; onAdminClick: () => void }) {
+    90→    90→  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    91→    91→  return (
+    92→    92→    <header className="bg-white shadow-sm sticky top-0 z-50">
+    93→    93→      {/* Top bar */}
+    94→    94→      <div className="bg-[#1B5E20] text-white">
+    95→    95→        <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center text-sm">
+    96→    96→          <div className="flex items-center gap-4">
+    97→    97→            <span>info@alhusseinvolunteeraward.jo</span>
+    98→    98→            <span>|</span>
+    99→    99→            <span dir="ltr">+962 6 1234567</span>
+   100→   100→          </div>
+   101→   101→          <div className="flex items-center gap-3">
+   102→   102→            <button onClick={onAdminClick} className="hover:opacity-80 flex items-center gap-1" title="لوحة التحكم">
+   103→   103→              <Icons name="lock" className="w-4 h-4" />
+   104→   104→            </button>
+   105→   105→            <button className="hover:opacity-80 flex items-center gap-1">
+   106→   106→              <Icons name="globe" className="w-4 h-4" />
+   107→   107→              <span>EN</span>
+   108→   108→            </button>
+   109→   109→          </div>
+   110→   110→        </div>
+   111→   111→      </div>
+   112→   112→      {/* Main nav */}
+   113→   113→      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+   114→   114→        <div className="flex items-center gap-3">
+   115→   115→          <div className="w-12 h-12 bg-[#1B5E20] rounded-full flex items-center justify-center text-white font-bold text-lg">ج</div>
+   116→   116→          <div>
+   117→   117→            <h1 className="text-[#1B5E20] font-bold text-sm leading-tight">جائزة الحسين بن عبدالله الثاني</h1>
+   118→   118→            <p className="text-[#8D6E63] text-xs">للعمل التطوعي</p>
+   119→   119→          </div>
+   120→   120→        </div>
+   121→   121→        {/* Desktop nav */}
+   122→   122→        <nav className="hidden md:flex items-center gap-1">
+   123→   123→          {navigation.filter(n => n.active).sort((a, b) => a.order - b.order).map(item => (
+   124→   124→            <a key={item.id} href={item.url} className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-[#1B5E20] hover:bg-green-50 rounded-md transition-colors">
+   125→   125→              {item.label}
+   126→   126→            </a>
+   127→   127→          ))}
+   128→   128→          <a href="#" className="mr-2 px-4 py-2 bg-[#8D6E63] text-white rounded-md text-sm hover:bg-[#5D4037] transition-colors">
+   129→   129→            تسجيل الدخول
+   130→   130→          </a>
+   131→   131→        </nav>
+   132→   132→        {/* Mobile menu button */}
+   133→   133→        <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+   134→   134→          <Icons name={mobileMenuOpen ? 'x' : 'menu'} className="w-6 h-6" />
+   135→   135→        </button>
+   136→   136→      </div>
+   137→   137→      {/* Mobile nav */}
+   138→   138→      {mobileMenuOpen && (
+   139→   139→        <div className="md:hidden border-t px-4 pb-4">
+   140→   140→          {navigation.filter(n => n.active).sort((a, b) => a.order - b.order).map(item => (
+   141→   141→            <a key={item.id} href={item.url} className="block px-3 py-2 text-sm text-gray-700 hover:bg-green-50 rounded-md">
+   142→   142→              {item.label}
+   143→   143→            </a>
+   144→   144→          ))}
+   145→   145→        </div>
+   146→   146→      )}
+   147→   147→    </header>
+   148→   148→  )
+   149→   149→}
+   150→   150→
+   151→   151→function HeroSection({ slides }: { slides: HeroSlide[] }) {
+   152→   152→  const [currentSlide, setCurrentSlide] = useState(0)
+   153→   153→  const activeSlides = slides.filter(s => s.active).sort((a, b) => a.order - b.order)
+   154→   154→  
+   155→   155→  useEffect(() => {
+   156→   156→    if (activeSlides.length <= 1) return
+   157→   157→    const timer = setInterval(() => {
+   158→   158→      setCurrentSlide(prev => (prev + 1) % activeSlides.length)
+   159→   159→    }, 5000)
+   160→   160→    return () => clearInterval(timer)
+   161→   161→  }, [activeSlides.length])
+   162→   162→
+   163→   163→  if (activeSlides.length === 0) return (
+   164→   164→    <section className="relative h-[500px] bg-gradient-to-bl from-[#1B5E20] via-[#2E7D32] to-[#5D4037] flex items-center justify-center">
+   165→   165→      <div className="text-center text-white px-4">
+   166→   166→        <h2 className="text-4xl md:text-5xl font-bold mb-4">جائزة الحسين بن عبدالله الثاني للعمل التطوعي</h2>
+   167→   167→        <p className="text-xl opacity-90">تقدير العطاء وتشجيع العمل التطوعي في المجتمع الأردني</p>
+   168→   168→      </div>
+   169→   169→    </section>
+   170→   170→  )
+   171→   171→
+   172→   172→  const slide = activeSlides[currentSlide]
+   173→   173→  return (
+   174→   174→    <section className="relative h-[500px] overflow-hidden">
+   175→   175→      {/* Background */}
+   176→   176→      <div className="absolute inset-0 bg-gradient-to-bl from-[#1B5E20] via-[#2E7D32] to-[#5D4037]" />
+   177→   177→      <div className="absolute inset-0 bg-black/30" />
+   178→   178→      {/* Content */}
+   179→   179→      <div className="relative z-10 h-full flex items-center">
+   180→   180→        <div className="max-w-7xl mx-auto px-4 w-full">
+   181→   181→          <div className="max-w-2xl animate-fade-in-up" key={currentSlide}>
+   182→   182→            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">{slide.title}</h2>
+   183→   183→            {slide.subtitle && <p className="text-lg md:text-xl text-white/90 mb-6">{slide.subtitle}</p>}
+   184→   184→            {slide.linkText && (
+   185→   185→              <a href={slide.link || '#'} className="inline-block px-6 py-3 bg-[#F9A825] text-[#1B5E20] font-bold rounded-lg hover:bg-yellow-400 transition-colors">
+   186→   186→                {slide.linkText}
+   187→   187→              </a>
+   188→   188→            )}
+   189→   189→          </div>
+   190→   190→        </div>
+   191→   191→      </div>
+   192→   192→      {/* Slide indicators */}
+   193→   193→      {activeSlides.length > 1 && (
+   194→   194→        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+   195→   195→          {activeSlides.map((_, i) => (
+   196→   196→            <button key={i} onClick={() => setCurrentSlide(i)}
+   197→   197→              className={`w-3 h-3 rounded-full transition-all ${i === currentSlide ? 'bg-[#F9A825] w-8' : 'bg-white/50'}`}
+   198→   198→            />
+   199→   199→          ))}
+   200→   200→        </div>
+   201→   201→      )}
+   202→   202→      {/* Navigation arrows */}
+   203→   203→      {activeSlides.length > 1 && (
+   204→   204→        <>
+   205→   205→          <button onClick={() => setCurrentSlide(prev => (prev - 1 + activeSlides.length) % activeSlides.length)}
+   206→   206→            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/20 rounded-full hover:bg-white/40 text-white">
+   207→   207→            <Icons name="chevronLeft" className="w-6 h-6" />
+   208→   208→          </button>
+   209→   209→          <button onClick={() => setCurrentSlide(prev => (prev + 1) % activeSlides.length)}
+   210→   210→            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/20 rounded-full hover:bg-white/40 text-white">
+   211→   211→            <Icons name="chevronRight" className="w-6 h-6" />
+   212→   212→          </button>
+   213→   213→        </>
+   214→   214→      )}
+   215→   215→    </section>
+   216→   216→  )
+   217→   217→}
+   218→   218→
+   219→   219→function NewsSection({ news }: { news: NewsItem[] }) {
+   220→   220→  const [currentNews, setCurrentNews] = useState(0)
+   221→   221→  const publishedNews = news.filter(n => n.published)
+   222→   222→  if (publishedNews.length === 0) return null
+   223→   223→
+   224→   224→  return (
+   225→   225→    <section className="py-16 bg-white">
+   226→   226→      <div className="max-w-7xl mx-auto px-4">
+   227→   227→        <div className="flex justify-between items-center mb-8">
+   228→   228→          <h2 className="text-3xl font-bold text-[#1B5E20]">أخبار</h2>
+   229→   229→          <div className="flex items-center gap-2">
+   230→   230→            {publishedNews.slice(0, 3).map((_, i) => (
+   231→   231→              <button key={i} onClick={() => setCurrentNews(i)}
+   232→   232→                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${i === currentNews ? 'bg-[#1B5E20] text-white' : 'bg-gray-200 text-gray-600'}`}>
+   233→   233→                {String(i + 1).padStart(2, '0')}
+   234→   234→              </button>
+   235→   235→            ))}
+   236→   236→          </div>
+   237→   237→        </div>
+   238→   238→        <div className="grid md:grid-cols-3 gap-6" key={currentNews}>
+   239→   239→          {publishedNews.slice(currentNews, currentNews + 3).map((item) => (
+   240→   240→            <div key={item.id} className="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+   241→   241→              <div className="h-48 bg-gradient-to-br from-[#1B5E20]/10 to-[#8D6E63]/10 flex items-center justify-center">
+   242→   242→                <Icons name="newspaper" className="w-16 h-16 text-[#1B5E20]/30" />
+   243→   243→              </div>
+   244→   244→              <div className="p-5">
+   245→   245→                <span className="text-xs text-[#8D6E63]">{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('ar-JO') : ''}</span>
+   246→   246→                <h3 className="font-bold text-gray-900 mt-2 mb-2 line-clamp-2">{item.title}</h3>
+   247→   247→                <p className="text-sm text-gray-600 line-clamp-2">{item.summary}</p>
+   248→   248→                <a href="#" className="text-[#1B5E20] text-sm font-medium mt-3 inline-block hover:underline">اقرأ المزيد ←</a>
+   249→   249→              </div>
+   250→   250→            </div>
+   251→   251→          ))}
+   252→   252→        </div>
+   253→   253→      </div>
+   254→   254→    </section>
+   255→   255→  )
+   256→   256→}
+   257→   257→
+   258→   258→function AboutSection({ abouts, statistics }: { abouts: AboutSection[]; statistics: Statistic[] }) {
+   259→   259→  const about = abouts[0]
+   260→   260→  return (
+   261→   261→    <section className="py-16 bg-gray-50">
+   262→   262→      <div className="max-w-7xl mx-auto px-4">
+   263→   263→        <div className="grid md:grid-cols-2 gap-12 items-center">
+   264→   264→          <div className="animate-slide-in-right">
+   265→   265→            {about ? (
+   266→   266→              <>
+   267→   267→                <h2 className="text-3xl font-bold text-[#1B5E20] mb-6">{about.title}</h2>
+   268→   268→                <div className="text-gray-700 leading-relaxed space-y-4" dangerouslySetInnerHTML={{ __html: about.content }} />
+   269→   269→              </>
+   270→   270→            ) : (
+   271→   271→              <>
+   272→   272→                <h2 className="text-3xl font-bold text-[#1B5E20] mb-6">من نحن</h2>
+   273→   273→                <p className="text-gray-700 leading-relaxed">جائزة الحسين بن عبدالله الثاني للعمل التطوعي هي جائزة وطنية تأسست لتكريم وتشجيع العاملين في مجال العمل التطوعي والأهلي في المملكة الأردنية الهاشمية.</p>
+   274→   274→              </>
+   275→   275→            )}
+   276→   276→            <a href="#" className="inline-block mt-6 px-6 py-2.5 bg-[#1B5E20] text-white rounded-lg hover:bg-[#2E7D32] transition-colors">اقرأ المزيد</a>
+   277→   277→          </div>
+   278→   278→          <div className="space-y-4">
+   279→   279→            <div className="bg-gradient-to-br from-[#1B5E20] to-[#2E7D32] rounded-2xl h-64 flex items-center justify-center">
+   280→   280→              <Icons name="handHeart" className="w-24 h-24 text-white/30" />
+   281→   281→            </div>
+   282→   282→            {/* Statistics */}
+   283→   283→            <div className="grid grid-cols-2 gap-4">
+   284→   284→              {statistics.map((stat) => (
+   285→   285→                <div key={stat.id} className="bg-white rounded-xl p-4 text-center shadow-sm">
+   286→   286→                  <span className="text-2xl mb-1 block">{stat.icon}</span>
+   287→   287→                  <span className="text-2xl font-bold text-[#1B5E20]">{stat.value}</span>
+   288→   288→                  <p className="text-sm text-gray-600">{stat.label}</p>
+   289→   289→                </div>
+   290→   290→              ))}
+   291→   291→            </div>
+   292→   292→          </div>
+   293→   293→        </div>
+   294→   294→      </div>
+   295→   295→    </section>
+   296→   296→  )
+   297→   297→}
+   298→   298→
+   299→   299→function CategoriesSection({ categories }: { categories: AwardCategory[] }) {
+   300→   300→  const activeCategories = categories.filter(c => c.active).sort((a, b) => a.order - b.order)
+   301→   301→  return (
+   302→   302→    <section className="py-16 bg-white">
+   303→   303→      <div className="max-w-7xl mx-auto px-4">
+   304→   304→        <div className="text-center mb-12">
+   305→   305→          <h2 className="text-3xl font-bold text-[#1B5E20] mb-3">فئات الجائزة</h2>
+   306→   306→          <p className="text-gray-600 max-w-2xl mx-auto">تشجيع العمل التطوعي وتكريم المتميزين في مختلف المجالات</p>
+   307→   307→        </div>
+   308→   308→        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+   309→   309→          {activeCategories.map((cat) => (
+   310→   310→            <div key={cat.id} className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all text-center">
+   311→   311→              <div className="w-16 h-16 mx-auto mb-4 bg-[#FFF8E1] rounded-full flex items-center justify-center text-3xl">
+   312→   312→                {cat.icon || '🏆'}
+   313→   313→              </div>
+   314→   314→              <h3 className="font-bold text-gray-900 mb-2">{cat.title}</h3>
+   315→   315→              <p className="text-sm text-gray-600 mb-4 line-clamp-3">{cat.description}</p>
+   316→   316→              <a href="#" className="text-[#1B5E20] text-sm font-medium hover:underline">اقرأ المزيد ←</a>
+   317→   317→            </div>
+   318→   318→          ))}
+   319→   319→        </div>
+   320→   320→      </div>
+   321→   321→    </section>
+   322→   322→  )
+   323→   323→}
+   324→   324→
+   325→   325→function VolunteerFieldsSection({ fields }: { fields: VolunteerField[] }) {
+   326→   326→  const activeFields = fields.filter(f => f.active).sort((a, b) => a.order - b.order)
+   327→   327→  return (
+   328→   328→    <section className="py-16 bg-[#1B5E20]">
+   329→   329→      <div className="max-w-7xl mx-auto px-4">
+   330→   330→        <div className="text-center mb-12">
+   331→   331→          <h2 className="text-3xl font-bold text-white mb-3">مجالات العمل التطوعي</h2>
+   332→   332→          <p className="text-white/70 max-w-2xl mx-auto">تنوع المجالات التطوعية يعكس شمولية العمل التطوعي في خدمة المجتمع</p>
+   333→   333→        </div>
+   334→   334→        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+   335→   335→          {activeFields.map((field) => (
+   336→   336→            <div key={field.id} className="bg-white/10 backdrop-blur rounded-xl p-4 text-center hover:bg-white/20 transition-colors cursor-pointer">
+   337→   337→              <span className="text-3xl block mb-2">{field.icon || '🤝'}</span>
+   338→   338→              <p className="text-white text-sm font-medium">{field.title}</p>
+   339→   339→            </div>
+   340→   340→          ))}
+   341→   341→        </div>
+   342→   342→      </div>
+   343→   343→    </section>
+   344→   344→  )
+   345→   345→}
+   346→   346→
+   347→   347→function StepsSection({ steps }: { steps: Step[] }) {
+   348→   348→  const activeSteps = steps.filter(s => s.active).sort((a, b) => a.order - b.order)
+   349→   349→  return (
+   350→   350→    <section className="py-16 bg-gray-50">
+   351→   351→      <div className="max-w-7xl mx-auto px-4">
+   352→   352→        <div className="text-center mb-12">
+   353→   353→          <h2 className="text-3xl font-bold text-[#1B5E20] mb-3">خطوات التقديم</h2>
+   354→   354→          <p className="text-gray-600">خطوات بسيطة للتقديم على الجائزة</p>
+   355→   355→        </div>
+   356→   356→        <div className="grid md:grid-cols-4 gap-8">
+   357→   357→          {activeSteps.map((step, i) => (
+   358→   358→            <div key={step.id} className="text-center relative">
+   359→   359→              <div className="w-20 h-20 mx-auto mb-4 bg-[#1B5E20] rounded-full flex items-center justify-center text-white relative">
+   360→   360→                <span className="text-2xl">{step.icon || (i + 1)}</span>
+   361→   361→                <span className="absolute -top-1 -right-1 w-7 h-7 bg-[#F9A825] rounded-full flex items-center justify-center text-[#1B5E20] font-bold text-xs">{i + 1}</span>
+   362→   362→              </div>
+   363→   363→              {i < activeSteps.length - 1 && (
+   364→   364→                <div className="hidden md:block absolute top-10 -left-4 w-8 border-t-2 border-dashed border-[#1B5E20]/30" />
+   365→   365→              )}
+   366→   366→              <h3 className="font-bold text-gray-900 mb-2">{step.title}</h3>
+   367→   367→              <p className="text-sm text-gray-600">{step.description}</p>
+   368→   368→            </div>
+   369→   369→          ))}
+   370→   370→        </div>
+   371→   371→      </div>
+   372→   372→    </section>
+   373→   373→  )
+   374→   374→}
+   375→   375→
+   376→   376→function PartnersSection({ partners }: { partners: Partner[] }) {
+   377→   377→  const activePartners = partners.filter(p => p.active).sort((a, b) => a.order - b.order)
+   378→   378→  return (
+   379→   379→    <section className="py-16 bg-white">
+   380→   380→      <div className="max-w-7xl mx-auto px-4">
+   381→   381→        <div className="text-center mb-12">
+   382→   382→          <h2 className="text-3xl font-bold text-[#1B5E20] mb-3">شركاؤنا</h2>
+   383→   383→          <p className="text-gray-600">نتعاون مع مؤسسات رائدة لتعزيز ثقافة التطوع</p>
+   384→   384→        </div>
+   385→   385→        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+   386→   386→          {activePartners.map((partner) => (
+   387→   387→            <a key={partner.id} href={partner.url || '#'} className="bg-gray-50 rounded-xl p-6 flex items-center justify-center h-24 hover:shadow-md transition-shadow">
+   388→   388→              <div className="text-center">
+   389→   389→                <div className="w-12 h-12 mx-auto bg-[#1B5E20]/10 rounded-lg flex items-center justify-center mb-2">
+   390→   390→                  <Icons name="users" className="w-6 h-6 text-[#1B5E20]" />
+   391→   391→                </div>
+   392→   392→                <p className="text-xs font-medium text-gray-700">{partner.name}</p>
+   393→   393→              </div>
+   394→   394→            </a>
+   395→   395→          ))}
+   396→   396→        </div>
+   397→   397→      </div>
+   398→   398→    </section>
+   399→   399→  )
+   400→   400→}
+   401→   401→
+   402→   402→function PublicFooter({ socialLinks }: { socialLinks: SocialLink[] }) {
+   403→   403→  const activeSocial = socialLinks.filter(s => s.active).sort((a, b) => a.order - b.order)
+   404→   404→  const iconMap: Record<string, string> = { facebook: 'facebook', twitter: 'twitter', instagram: 'instagram', youtube: 'youtube', linkedin: 'linkedin' }
+   405→   405→
+   406→   406→  return (
+   407→   407→    <footer className="bg-[#1a1a2e] text-white">
+   408→   408→      <div className="max-w-7xl mx-auto px-4 py-12">
+   409→   409→        <div className="grid md:grid-cols-4 gap-8">
+   410→   410→          <div>
+   411→   411→            <div className="flex items-center gap-3 mb-4">
+   412→   412→              <div className="w-10 h-10 bg-[#1B5E20] rounded-full flex items-center justify-center text-white font-bold">ج</div>
+   413→   413→              <div>
+   414→   414→                <h3 className="font-bold text-sm">جائزة الحسين</h3>
+   415→   415→                <p className="text-xs text-gray-400">للعمل التطوعي</p>
+   416→   416→              </div>
+   417→   417→            </div>
+   418→   418→            <p className="text-sm text-gray-400 leading-relaxed">جائزة وطنية لتكريم وتشجيع العاملين في مجال العمل التطوعي والأهلي في المملكة الأردنية الهاشمية.</p>
+   419→   419→          </div>
+   420→   420→          <div>
+   421→   421→            <h3 className="font-bold mb-4">روابط سريعة</h3>
+   422→   422→            <ul className="space-y-2 text-sm text-gray-400">
+   423→   423→              <li><a href="#" className="hover:text-white transition-colors">الرئيسية</a></li>
+   424→   424→              <li><a href="#" className="hover:text-white transition-colors">عن الجائزة</a></li>
+   425→   425→              <li><a href="#" className="hover:text-white transition-colors">الفئات والشروط</a></li>
+   426→   426→              <li><a href="#" className="hover:text-white transition-colors">الفعاليات</a></li>
+   427→   427→            </ul>
+   428→   428→          </div>
+   429→   429→          <div>
+   430→   430→            <h3 className="font-bold mb-4">معلومات</h3>
+   431→   431→            <ul className="space-y-2 text-sm text-gray-400">
+   432→   432→              <li><a href="#" className="hover:text-white transition-colors">سياسة الخصوصية</a></li>
+   433→   433→              <li><a href="#" className="hover:text-white transition-colors">اتصل بنا</a></li>
+   434→   434→              <li><a href="#" className="hover:text-white transition-colors">خريطة الموقع</a></li>
+   435→   435→              <li><a href="#" className="hover:text-white transition-colors">الأسئلة الشائعة</a></li>
+   436→   436→            </ul>
+   437→   437→          </div>
+   438→   438→          <div>
+   439→   439→            <h3 className="font-bold mb-4">تواصل معنا</h3>
+   440→   440→            <p className="text-sm text-gray-400 mb-4">info@alhusseinvolunteeraward.jo</p>
+   441→   441→            <div className="flex gap-3">
+   442→   442→              {activeSocial.map(link => (
+   443→   443→                <a key={link.id} href={link.url} className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#1B5E20] transition-colors">
+   444→   444→                  <Icons name={iconMap[link.platform] || 'globe'} className="w-4 h-4" />
+   445→   445→                </a>
+   446→   446→              ))}
+   447→   447→            </div>
+   448→   448→          </div>
+   449→   449→        </div>
+   450→   450→      </div>
+   451→   451→      <div className="border-t border-white/10">
+   452→   452→        <div className="max-w-7xl mx-auto px-4 py-4 text-center text-sm text-gray-500">
+   453→   453→          جميع الحقوق محفوظة © {new Date().getFullYear()} جائزة الحسين بن عبدالله الثاني للعمل التطوعي
+   454→   454→        </div>
+   455→   455→      </div>
+   456→   456→    </footer>
+   457→   457→  )
+   458→   458→}
+   459→   459→
+   460→   460→// ============================================================
+   461→   461→// ADMIN CMS COMPONENTS
+   462→   462→// ============================================================
+   463→   463→
+   464→   464→function AdminSidebar({ currentView, onNavigate, onLogout }: { currentView: AdminView; onNavigate: (v: AdminView) => void; onLogout: () => void }) {
+   465→   465→  const menuItems: { key: AdminView; label: string; icon: string }[] = [
+   466→   466→    { key: 'dashboard', label: 'لوحة التحكم', icon: 'dashboard' },
+   467→   467→    { key: 'pages', label: 'الصفحات', icon: 'layout' },
+   468→   468→    { key: 'builder', label: 'مُنشئ الصفحات', icon: 'code' },
+   469→   469→    { key: 'news', label: 'الأخبار', icon: 'newspaper' },
+   470→   470→    { key: 'categories', label: 'فئات الجائزة', icon: 'trophy' },
+   471→   471→    { key: 'volunteer-fields', label: 'مجالات التطوع', icon: 'heart' },
+   472→   472→    { key: 'events', label: 'الفعاليات', icon: 'calendar' },
+   473→   473→    { key: 'hero-slides', label: 'الشرائح الرئيسية', icon: 'image' },
+   474→   474→    { key: 'steps', label: 'الخطوات', icon: 'chevronLeft' },
+   475→   475→    { key: 'partners', label: 'الشركاء', icon: 'users' },
+   476→   476→    { key: 'statistics', label: 'الإحصائيات', icon: 'barChart' },
+   477→   477→    { key: 'about-sections', label: 'من نحن', icon: 'eye' },
+   478→   478→    { key: 'navigation', label: 'القوائم', icon: 'menu' },
+   479→   479→    { key: 'social-links', label: 'روابط التواصل', icon: 'globe' },
+   480→   480→    { key: 'media', label: 'المكتبة', icon: 'image' },
+   481→   481→    { key: 'messages', label: 'الرسائل', icon: 'mail' },
+   482→   482→    { key: 'settings', label: 'الإعدادات', icon: 'settings' },
+   483→   483→    { key: 'users', label: 'المستخدمون', icon: 'users' },
+   484→   484→  ]
+   485→   485→
+   486→   486→  return (
+   487→   487→    <aside className="w-64 bg-[#1a1a2e] text-white min-h-screen flex flex-col overflow-y-auto admin-scroll">
+   488→   488→      <div className="p-4 border-b border-white/10">
+   489→   489→        <div className="flex items-center gap-3">
+   490→   490→          <div className="w-10 h-10 bg-[#1B5E20] rounded-full flex items-center justify-center font-bold">ج</div>
+   491→   491→          <div>
+   492→   492→            <h2 className="font-bold text-sm">لوحة التحكم</h2>
+   493→   493→            <p className="text-xs text-gray-400">CMS</p>
+   494→   494→          </div>
+   495→   495→        </div>
+   496→   496→      </div>
+   497→   497→      <nav className="flex-1 p-3 space-y-1">
+   498→   498→        {menuItems.map(item => (
+   499→   499→          <button key={item.key} onClick={() => onNavigate(item.key)}
+   500→   500→            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${currentView === item.key ? 'bg-[#1B5E20] text-white' : 'text-gray-300 hover:bg-white/10'}`}>
+   501→   501→            <Icons name={item.icon} className="w-4 h-4" />
+   502→   502→            <span>{item.label}</span>
+   503→   503→          </button>
+   504→   504→        ))}
+   505→   505→      </nav>
+   506→   506→      <div className="p-3 border-t border-white/10">
+   507→   507→        <button onClick={onLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300 hover:bg-white/10">
+   508→   508→          <Icons name="logout" className="w-4 h-4" />
+   509→   509→          <span>العودة للموقع</span>
+   510→   510→        </button>
+   511→   511→      </div>
+   512→   512→    </aside>
+   513→   513→  )
+   514→   514→}
+   515→   515→
+   516→   516→// Generic data table component for admin
+   517→   517→function DataTable<T extends { id: string }>({ 
+   518→   518→  items, columns, onEdit, onDelete, onAdd, addLabel 
+   519→   519→}: { 
+   520→   520→  items: T[]; columns: { key: string; label: string; render?: (item: T) => React.ReactNode }[]; 
+   521→   521→  onEdit: (item: T) => void; onDelete: (id: string) => void; onAdd?: () => void; addLabel?: string 
+   522→   522→}) {
+   523→   523→  return (
+   524→   524→    <div>
+   525→   525→      <div className="flex justify-between items-center mb-4">
+   526→   526→        <div />
+   527→   527→        {onAdd && (
+   528→   528→          <button onClick={onAdd} className="flex items-center gap-2 px-4 py-2 bg-[#1B5E20] text-white rounded-lg hover:bg-[#2E7D32] transition-colors text-sm">
+   529→   529→            <Icons name="plus" className="w-4 h-4" /> {addLabel || 'إضافة'}
+   530→   530→          </button>
+   531→   531→        )}
+   532→   532→      </div>
+   533→   533→      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+   534→   534→        <div className="overflow-x-auto">
+   535→   535→          <table className="w-full text-sm">
+   536→   536→            <thead>
+   537→   537→              <tr className="bg-gray-50 border-b">
+   538→   538→                {columns.map(col => (
+   539→   539→                  <th key={col.key} className="px-4 py-3 text-right font-medium text-gray-600">{col.label}</th>
+   540→   540→                ))}
+   541→   541→                <th className="px-4 py-3 text-right font-medium text-gray-600">إجراءات</th>
+   542→   542→              </tr>
+   543→   543→            </thead>
+   544→   544→            <tbody>
+   545→   545→              {items.map(item => (
+   546→   546→                <tr key={item.id} className="border-b hover:bg-gray-50">
+   547→   547→                  {columns.map(col => (
+   548→   548→                    <td key={col.key} className="px-4 py-3">
+   549→   549→                      {col.render ? col.render(item) : String((item as Record<string, unknown>)[col.key] ?? '')}
+   550→   550→                    </td>
+   551→   551→                  ))}
+   552→   552→                  <td className="px-4 py-3">
+   553→   553→                    <div className="flex gap-2">
+   554→   554→                      <button onClick={() => onEdit(item)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"><Icons name="edit" className="w-4 h-4" /></button>
+   555→   555→                      <button onClick={() => onDelete(item.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded"><Icons name="trash" className="w-4 h-4" /></button>
+   556→   556→                    </div>
+   557→   557→                  </td>
+   558→   558→                </tr>
+   559→   559→              ))}
+   560→   560→              {items.length === 0 && (
+   561→   561→                <tr><td colSpan={columns.length + 1} className="px-4 py-8 text-center text-gray-400">لا توجد بيانات</td></tr>
+   562→   562→              )}
+   563→   563→            </tbody>
+   564→   564→          </table>
+   565→   565→        </div>
+   566→   566→      </div>
+   567→   567→    </div>
+   568→   568→  )
+   569→   569→}
+   570→   570→
+   571→   571→// Generic form modal
+   572→   572→function FormModal({ title, isOpen, onClose, children }: { title: string; isOpen: boolean; onClose: () => void; children: React.ReactNode }) {
+   573→   573→  if (!isOpen) return null
+   574→   574→  return (
+   575→   575→    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+   576→   576→      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto admin-scroll">
+   577→   577→        <div className="flex justify-between items-center p-5 border-b">
+   578→   578→          <h3 className="font-bold text-lg">{title}</h3>
+   579→   579→          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded"><Icons name="x" className="w-5 h-5" /></button>
+   580→   580→        </div>
+   581→   581→        <div className="p-5">{children}</div>
+   582→   582→      </div>
+   583→   583→    </div>
+   584→   584→  )
+   585→   585→}
+   586→   586→
+   587→   587→// ============================================================
+   588→   588→// ADMIN VIEW: Dashboard
+   589→   589→// ============================================================
+   590→   590→function DashboardView() {
+   591→   591→  const [stats, setStats] = useState({ news: 0, categories: 0, partners: 0, messages: 0, pages: 0, events: 0 })
+   592→   592→  
+   593→   593→  useEffect(() => {
+   594→   594→    async function loadStats() {
+   595→   595→      try {
+   596→   596→        const [news, categories, partners, messages, pages, events] = await Promise.all([
+   597→   597→          apiFetch('news'), apiFetch('categories'), apiFetch('partners'),
+   598→   598→          apiFetch('messages'), apiFetch('pages'), apiFetch('events'),
+   599→   599→        ])
+   600→   600→        setStats({ news: news.length, categories: categories.length, partners: partners.length, messages: messages.length, pages: pages.length, events: events.length })
+   601→   601→      } catch {}
+   602→   602→    }
+   603→   603→    loadStats()
+   604→   604→  }, [])
+   605→   605→
+   606→   606→  const cards = [
+   607→   607→    { label: 'الأخبار', value: stats.news, icon: 'newspaper', color: 'bg-blue-500' },
+   608→   608→    { label: 'فئات الجائزة', value: stats.categories, icon: 'trophy', color: 'bg-yellow-500' },
+   609→   609→    { label: 'الشركاء', value: stats.partners, icon: 'users', color: 'bg-green-500' },
+   610→   610→    { label: 'الرسائل', value: stats.messages, icon: 'mail', color: 'bg-red-500' },
+   611→   611→    { label: 'الصفحات', value: stats.pages, icon: 'layout', color: 'bg-purple-500' },
+   612→   612→    { label: 'الفعاليات', value: stats.events, icon: 'calendar', color: 'bg-orange-500' },
+   613→   613→  ]
+   614→   614→
+   615→   615→  return (
+   616→   616→    <div>
+   617→   617→      <h2 className="text-2xl font-bold mb-6">لوحة التحكم</h2>
+   618→   618→      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+   619→   619→        {cards.map(card => (
+   620→   620→          <div key={card.label} className="bg-white rounded-xl p-5 shadow-sm flex items-center gap-4">
+   621→   621→            <div className={`w-12 h-12 ${card.color} rounded-xl flex items-center justify-center text-white`}>
+   622→   622→              <Icons name={card.icon} className="w-6 h-6" />
+   623→   623→            </div>
+   624→   624→            <div>
+   625→   625→              <p className="text-2xl font-bold">{card.value}</p>
+   626→   626→              <p className="text-sm text-gray-500">{card.label}</p>
+   627→   627→            </div>
+   628→   628→          </div>
+   629→   629→        ))}
+   630→   630→      </div>
+   631→   631→    </div>
+   632→   632→  )
+   633→   633→}
+   634→   634→
+   635→   635→// ============================================================
+   636→   636→// ADMIN VIEW: Generic CRUD
+   637→   637→// ============================================================
+   638→   638→function GenericCRUDView<T extends { id: string }>({ 
+   639→   639→  collection, title, columns, renderForm, newItemTemplate 
+   640→   640→}: { 
+   641→   641→  collection: string; title: string; columns: { key: string; label: string; render?: (item: T) => React.ReactNode }[];
+   642→   642→  renderForm: (item: T, onChange: (item: T) => void) => React.ReactNode;
+   643→   643→  newItemTemplate: T
+   644→   644→}) {
+   645→   645→  const [items, setItems] = useState<T[]>([])
+   646→   646→  const [editing, setEditing] = useState<T | null>(null)
+   647→   647→  const [isAdding, setIsAdding] = useState(false)
+   648→   648→  const [form, setForm] = useState<T>(newItemTemplate)
+   649→   649→  const [loading, setLoading] = useState(true)
+   650→   650→
+   651→   651→  const load = useCallback(async () => {
+   652→   652→    try {
+   653→   653→      const data = await apiFetch(collection)
+   654→   654→      setItems(data)
+   655→   655→    } catch {}
+   656→   656→    setLoading(false)
+   657→   657→  }, [collection])
+   658→   658→
+   659→   659→  useEffect(() => { load() }, [load])
+   660→   660→
+   661→   661→  const handleSave = async () => {
+   662→   662→    try {
+   663→   663→      if (isAdding) {
+   664→   664→        await apiFetch(collection, { method: 'POST', body: JSON.stringify(form) })
+   665→   665→      } else if (editing) {
+   666→   666→        await apiFetch(collection, { method: 'PUT', body: JSON.stringify(form) })
+   667→   667→      }
+   668→   668→      setEditing(null)
+   669→   669→      setIsAdding(false)
+   670→   670→      setForm(newItemTemplate)
+   671→   671→      load()
+   672→   672→    } catch {}
+   673→   673→  }
+   674→   674→
+   675→   675→  const handleDelete = async (id: string) => {
+   676→   676→    if (!confirm('هل أنت متأكد من الحذف؟')) return
+   677→   677→    try {
+   678→   678→      await apiFetch(`${collection}?id=${id}`, { method: 'DELETE' })
+   679→   679→      load()
+   680→   680→    } catch {}
+   681→   681→  }
+   682→   682→
+   683→   683→  const handleEdit = (item: T) => {
+   684→   684→    setEditing(item)
+   685→   685→    setForm(item)
+   686→   686→    setIsAdding(false)
+   687→   687→  }
+   688→   688→
+   689→   689→  const handleAdd = () => {
+   690→   690→    setEditing(newItemTemplate)
+   691→   691→    setForm({ ...newItemTemplate })
+   692→   692→    setIsAdding(true)
+   693→   693→  }
+   694→   694→
+   695→   695→  return (
+   696→   696→    <div>
+   697→   697→      <h2 className="text-2xl font-bold mb-6">{title}</h2>
+   698→   698→      <DataTable items={items} columns={columns} onEdit={handleEdit} onDelete={handleDelete} onAdd={handleAdd} addLabel={`إضافة ${title}`} />
+   699→   699→      <FormModal title={isAdding ? `إضافة ${title}` : `تعديل ${title}`} isOpen={!!editing} onClose={() => { setEditing(null); setIsAdding(false) }}>
+   700→   700→        {renderForm(form, setForm)}
+   701→   701→        <div className="flex gap-3 mt-6">
+   702→   702→          <button onClick={handleSave} className="flex items-center gap-2 px-5 py-2.5 bg-[#1B5E20] text-white rounded-lg hover:bg-[#2E7D32]">
+   703→   703→            <Icons name="save" className="w-4 h-4" /> حفظ
+   704→   704→          </button>
+   705→   705→          <button onClick={() => { setEditing(null); setIsAdding(false) }} className="px-5 py-2.5 bg-gray-200 rounded-lg hover:bg-gray-300">إلغاء</button>
+   706→   706→        </div>
+   707→   707→      </FormModal>
+   708→   708→    </div>
+   709→   709→  )
+   710→   710→}
+   711→   711→
+   712→   712→// ============================================================
+   713→   713→// ADMIN VIEW: HTML Page Builder
+   714→   714→// ============================================================
+   715→   715→function BuilderView() {
+   716→   716→  const [pages, setPages] = useState<PageItem[]>([])
+   717→   717→  const [currentPage, setCurrentPage] = useState<PageItem | null>(null)
+   718→   718→  const [blocks, setBlocks] = useState<BuilderBlock[]>([])
+   719→   719→  const [selectedBlock, setSelectedBlock] = useState<string | null>(null)
+   720→   720→  const [htmlMode, setHtmlMode] = useState(false)
+   721→   721→  const [htmlContent, setHtmlContent] = useState('')
+   722→   722→  const [newPageTitle, setNewPageTitle] = useState('')
+   723→   723→  const [newPageSlug, setNewPageSlug] = useState('')
+   724→   724→
+   725→   725→  useEffect(() => {
+   726→   726→    apiFetch('pages').then(setPages).catch(() => {})
+   727→   727→  }, [])
+   728→   728→
+   729→   729→  const addBlock = (type: string) => {
+   730→   730→    const newBlock: BuilderBlock = {
+   731→   731→      id: `block-${Date.now()}`,
+   732→   732→      type,
+   733→   733→      content: type === 'heading' ? 'عنوان جديد' : type === 'paragraph' ? 'نص الفقرة هنا...' : '',
+   734→   734→      properties: {},
+   735→   735→      order: blocks.length,
+   736→   736→    }
+   737→   737→    setBlocks([...blocks, newBlock])
+   738→   738→  }
+   739→   739→
+   740→   740→  const updateBlock = (id: string, updates: Partial<BuilderBlock>) => {
+   741→   741→    setBlocks(blocks.map(b => b.id === id ? { ...b, ...updates } : b))
+   742→   742→  }
+   743→   743→
+   744→   744→  const removeBlock = (id: string) => {
+   745→   745→    setBlocks(blocks.filter(b => b.id !== id))
+   746→   746→  }
+   747→   747→
+   748→   748→  const moveBlock = (id: string, direction: 'up' | 'down') => {
+   749→   749→    const index = blocks.findIndex(b => b.id === id)
+   750→   750→    if ((direction === 'up' && index === 0) || (direction === 'down' && index === blocks.length - 1)) return
+   751→   751→    const newBlocks = [...blocks]
+   752→   752→    const swapIndex = direction === 'up' ? index - 1 : index + 1
+   753→   753→    ;[newBlocks[index], newBlocks[swapIndex]] = [newBlocks[swapIndex], newBlocks[index]]
+   754→   754→    newBlocks.forEach((b, i) => b.order = i)
+   755→   755→    setBlocks(newBlocks)
+   756→   756→  }
+   757→   757→
+   758→   758→  const savePage = async () => {
+   759→   759→    if (!currentPage) return
+   760→   760→    try {
+   761→   761→      await apiFetch('pages', {
+   762→   762→        method: 'PUT',
+   763→   763→        body: JSON.stringify({
+   764→   764→          id: currentPage.id,
+   765→   765→          content: htmlMode ? htmlContent : renderBlocksToHtml(blocks),
+   766→   766→          builderData: JSON.stringify(blocks),
+   767→   767→        }),
+   768→   768→      })
+   769→   769→      alert('تم الحفظ بنجاح!')
+   770→   770→    } catch {}
+   771→   771→  }
+   772→   772→
+   773→   773→  const createNewPage = async () => {
+   774→   774→    try {
+   775→   775→      const page = await apiFetch('pages', {
+   776→   776→        method: 'POST',
+   777→   777→        body: JSON.stringify({ title: newPageTitle, slug: newPageSlug, content: '', published: false, order: pages.length, template: 'default' }),
+   778→   778→      })
+   779→   779→      setPages([...pages, page])
+   780→   780→      setCurrentPage(page)
+   781→   781→      setBlocks([])
+   782→   782→      setNewPageTitle('')
+   783→   783→      setNewPageSlug('')
+   784→   784→    } catch {}
+   785→   785→  }
+   786→   786→
+   787→   787→  const renderBlocksToHtml = (blocks: BuilderBlock[]): string => {
+   788→   788→    return blocks.map(block => {
+   789→   789→      switch (block.type) {
+   790→   790→        case 'heading': return `<h2>${block.content}</h2>`
+   791→   791→        case 'paragraph': return `<p>${block.content}</p>`
+   792→   792→        case 'image': return `<img src="${block.content}" alt="${block.properties.alt || ''}" style="max-width:100%" />`
+   793→   793→        case 'button': return `<a href="${block.properties.link || '#'}" class="btn">${block.content}</a>`
+   794→   794→        case 'divider': return `<hr />`
+   795→   795→        case 'spacer': return `<div style="height:${block.properties.height || 40}px"></div>`
+   796→   796→        case 'html': return block.content
+   797→   797→        default: return `<div>${block.content}</div>`
+   798→   798→      }
+   799→   799→    }).join('\n')
+   800→   800→  }
+   801→   801→
+   802→   802→  const blockTypes = [
+   803→   803→    { type: 'heading', label: 'عنوان', icon: '📝' },
+   804→   804→    { type: 'paragraph', label: 'فقرة', icon: '📄' },
+   805→   805→    { type: 'image', label: 'صورة', icon: '🖼️' },
+   806→   806→    { type: 'button', label: 'زر', icon: '🔘' },
+   807→   807→    { type: 'divider', label: 'فاصل', icon: '➖' },
+   808→   808→    { type: 'spacer', label: 'مسافة', icon: '↕️' },
+   809→   809→    { type: 'html', label: 'HTML', icon: '💻' },
+   810→   810→    { type: 'video', label: 'فيديو', icon: '🎬' },
+   811→   811→  ]
+   812→   812→
+   813→   813→  return (
+   814→   814→    <div>
+   815→   815→      <div className="flex justify-between items-center mb-6">
+   816→   816→        <h2 className="text-2xl font-bold">مُنشئ الصفحات</h2>
+   817→   817→        {currentPage && (
+   818→   818→          <button onClick={savePage} className="flex items-center gap-2 px-4 py-2 bg-[#1B5E20] text-white rounded-lg hover:bg-[#2E7D32]">
+   819→   819→            <Icons name="save" className="w-4 h-4" /> حفظ الصفحة
+   820→   820→          </button>
+   821→   821→        )}
+   822→   822→      </div>
+   823→   823→
+   824→   824→      {!currentPage ? (
+   825→   825→        <div>
+   826→   826→          {/* Page list */}
+   827→   827→          <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
+   828→   828→            <h3 className="font-bold mb-4">الصفحات الموجودة</h3>
+   829→   829→            {pages.map(page => (
+   830→   830→              <div key={page.id} className="flex justify-between items-center p-3 border-b hover:bg-gray-50 cursor-pointer" onClick={() => {
+   831→   831→                setCurrentPage(page)
+   832→   832→                try {
+   833→   833→                  if (page.builderData) setBlocks(JSON.parse(page.builderData))
+   834→   834→                  else setBlocks([])
+   835→   835→                } catch { setBlocks([]) }
+   836→   836→                setHtmlContent(page.content || '')
+   837→   837→              }}>
+   838→   838→                <div>
+   839→   839→                  <span className="font-medium">{page.title}</span>
+   840→   840→                  <span className="text-sm text-gray-400 mr-2">/{page.slug}</span>
+   841→   841→                </div>
+   842→   842→                <span className={`text-xs px-2 py-1 rounded-full ${page.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+   843→   843→                  {page.published ? 'منشور' : 'مسودة'}
+   844→   844→                </span>
+   845→   845→              </div>
+   846→   846→            ))}
+   847→   847→          </div>
+   848→   848→          {/* New page form */}
+   849→   849→          <div className="bg-white rounded-xl shadow-sm p-5">
+   850→   850→            <h3 className="font-bold mb-4">إنشاء صفحة جديدة</h3>
+   851→   851→            <div className="grid grid-cols-2 gap-4">
+   852→   852→              <div>
+   853→   853→                <label className="block text-sm font-medium mb-1">عنوان الصفحة</label>
+   854→   854→                <input type="text" value={newPageTitle} onChange={e => setNewPageTitle(e.target.value)} className="w-full border rounded-lg px-3 py-2 text-sm" placeholder="عنوان الصفحة" />
+   855→   855→              </div>
+   856→   856→              <div>
+   857→   857→                <label className="block text-sm font-medium mb-1">الرابط</label>
+   858→   858→                <input type="text" value={newPageSlug} onChange={e => setNewPageSlug(e.target.value)} className="w-full border rounded-lg px-3 py-2 text-sm" placeholder="page-slug" dir="ltr" />
+   859→   859→              </div>
+   860→   860→            </div>
+   861→   861→            <button onClick={createNewPage} className="mt-4 px-4 py-2 bg-[#1B5E20] text-white rounded-lg hover:bg-[#2E7D32] text-sm">إنشاء الصفحة</button>
+   862→   862→          </div>
+   863→   863→        </div>
+   864→   864→      ) : (
+   865→   865→        <div className="grid grid-cols-12 gap-4">
+   866→   866→          {/* Block types sidebar */}
+   867→   867→          <div className="col-span-3">
+   868→   868→            <div className="bg-white rounded-xl shadow-sm p-4 sticky top-4">
+   869→   869→              <h3 className="font-bold mb-3 text-sm">العناصر</h3>
+   870→   870→              <div className="grid grid-cols-2 gap-2">
+   871→   871→                {blockTypes.map(bt => (
+   872→   872→                  <button key={bt.type} onClick={() => addBlock(bt.type)}
+   873→   873→                    className="p-3 bg-gray-50 rounded-lg text-center hover:bg-[#1B5E20]/10 transition-colors text-sm">
+   874→   874→                    <span className="text-xl block mb-1">{bt.icon}</span>
+   875→   875→                    <span>{bt.label}</span>
+   876→   876→                  </button>
+   877→   877→                ))}
+   878→   878→              </div>
+   879→   879→              <hr className="my-4" />
+   880→   880→              <div className="flex gap-2">
+   881→   881→                <button onClick={() => setHtmlMode(!htmlMode)}
+   882→   882→                  className={`flex-1 py-2 rounded-lg text-sm ${htmlMode ? 'bg-[#1B5E20] text-white' : 'bg-gray-100'}`}>
+   883→   883→                  HTML
+   884→   884→                </button>
+   885→   885→                <button onClick={() => setHtmlMode(false)}
+   886→   886→                  className={`flex-1 py-2 rounded-lg text-sm ${!htmlMode ? 'bg-[#1B5E20] text-white' : 'bg-gray-100'}`}>
+   887→   887→                  مرئي
+   888→   888→                </button>
+   889→   889→              </div>
+   890→   890→              <button onClick={() => setCurrentPage(null)} className="w-full mt-3 py-2 bg-gray-100 rounded-lg text-sm hover:bg-gray-200">
+   891→   891→                العودة للقائمة
+   892→   892→              </button>
+   893→   893→            </div>
+   894→   894→          </div>
+   895→   895→          {/* Builder area */}
+   896→   896→          <div className="col-span-9">
+   897→   897→            {htmlMode ? (
+   898→   898→              <div className="bg-white rounded-xl shadow-sm p-4">
+   899→   899→                <textarea value={htmlContent} onChange={e => setHtmlContent(e.target.value)}
+   900→   900→                  className="w-full h-[600px] font-mono text-sm border rounded-lg p-3" dir="ltr" placeholder="<h1>Hello World</h1>" />
+   901→   901→              </div>
+   902→   902→            ) : (
+   903→   903→              <div className="space-y-3">
+   904→   904→                {blocks.length === 0 && (
+   905→   905→                  <div className="bg-white rounded-xl shadow-sm p-12 text-center text-gray-400">
+   906→   906→                    <Icons name="plus" className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+   907→   907→                    <p>اختر عنصراً من القائمة الجانبية للبدء</p>
+   908→   908→                  </div>
+   909→   909→                )}
+   910→   910→                {blocks.map((block) => (
+   911→   911→                  <div key={block.id} className={`builder-block bg-white rounded-xl shadow-sm p-4 ${selectedBlock === block.id ? 'selected' : ''}`}
+   912→   912→                    onClick={() => setSelectedBlock(block.id)}>
+   913→   913→                    <div className="flex justify-between items-center mb-2">
+   914→   914→                      <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">{block.type}</span>
+   915→   915→                      <div className="flex gap-1">
+   916→   916→                        <button onClick={(e) => { e.stopPropagation(); moveBlock(block.id, 'up') }} className="p-1 hover:bg-gray-100 rounded text-xs">↑</button>
+   917→   917→                        <button onClick={(e) => { e.stopPropagation(); moveBlock(block.id, 'down') }} className="p-1 hover:bg-gray-100 rounded text-xs">↓</button>
+   918→   918→                        <button onClick={(e) => { e.stopPropagation(); removeBlock(block.id) }} className="p-1 hover:bg-red-100 rounded text-red-500 text-xs">✕</button>
+   919→   919→                      </div>
+   920→   920→                    </div>
+   921→   921→                    {block.type === 'heading' && (
+   922→   922→                      <input type="text" value={block.content} onChange={e => updateBlock(block.id, { content: e.target.value })}
+   923→   923→                        className="w-full text-xl font-bold border-none outline-none" placeholder="العنوان" />
+   924→   924→                    )}
+   925→   925→                    {block.type === 'paragraph' && (
+   926→   926→                      <textarea value={block.content} onChange={e => updateBlock(block.id, { content: e.target.value })}
+   927→   927→                        className="w-full min-h-[80px] border-none outline-none resize-y text-sm" placeholder="نص الفقرة" />
+   928→   928→                    )}
+   929→   929→                    {block.type === 'image' && (
+   930→   930→                      <input type="text" value={block.content} onChange={e => updateBlock(block.id, { content: e.target.value })}
+   931→   931→                        className="w-full border rounded px-2 py-1 text-sm" placeholder="رابط الصورة" dir="ltr" />
+   932→   932→                    )}
+   933→   933→                    {block.type === 'button' && (
+   934→   934→                      <div className="flex gap-2">
+   935→   935→                        <input type="text" value={block.content} onChange={e => updateBlock(block.id, { content: e.target.value })}
+   936→   936→                          className="flex-1 border rounded px-2 py-1 text-sm" placeholder="نص الزر" />
+   937→   937→                        <input type="text" value={String(block.properties.link || '')} onChange={e => updateBlock(block.id, { properties: { ...block.properties, link: e.target.value } })}
+   938→   938→                          className="flex-1 border rounded px-2 py-1 text-sm" placeholder="الرابط" dir="ltr" />
+   939→   939→                      </div>
+   940→   940→                    )}
+   941→   941→                    {block.type === 'html' && (
+   942→   942→                      <textarea value={block.content} onChange={e => updateBlock(block.id, { content: e.target.value })}
+   943→   943→                        className="w-full min-h-[120px] font-mono text-xs border rounded p-2" dir="ltr" placeholder="<div>HTML code</div>" />
+   944→   944→                    )}
+   945→   945→                    {block.type === 'divider' && <hr className="border-t-2 border-gray-200" />}
+   946→   946→                    {block.type === 'spacer' && (
+   947→   947→                      <div className="bg-gray-50 rounded text-center text-xs text-gray-400 py-4">
+   948→   948→                        مسافة: <input type="number" value={Number(block.properties.height || 40)} onChange={e => updateBlock(block.id, { properties: { ...block.properties, height: parseInt(e.target.value) } })}
+   949→   949→                          className="w-16 border rounded px-1 py-0.5 text-center text-xs mx-1" /> بكسل
+   950→   950→                      </div>
+   951→   951→                    )}
+   952→   952→                    {block.type === 'video' && (
+   953→   953→                      <input type="text" value={block.content} onChange={e => updateBlock(block.id, { content: e.target.value })}
+   954→   954→                        className="w-full border rounded px-2 py-1 text-sm" placeholder="رابط الفيديو (YouTube)" dir="ltr" />
+   955→   955→                    )}
+   956→   956→                  </div>
+   957→   957→                ))}
+   958→   958→              </div>
+   959→   959→            )}
+   960→   960→          </div>
+   961→   961→        </div>
+   962→   962→      )}
+   963→   963→    </div>
+   964→   964→  )
+   965→   965→}
+   966→   966→
+   967→   967→// ============================================================
+   968→   968→// ADMIN VIEW: Settings
+   969→   969→// ============================================================
+   970→   970→function SettingsView() {
+   971→   971→  const [settings, setSettings] = useState<SiteSetting[]>([])
+   972→   972→  const [loading, setLoading] = useState(true)
+   973→   973→  const [saving, setSaving] = useState(false)
+   974→   974→
+   975→   975→  useEffect(() => {
+   976→   976→    apiFetch('settings').then(setSettings).catch(() => {}).finally(() => setLoading(false))
+   977→   977→  }, [])
+   978→   978→
+   979→   979→  const handleSave = async () => {
+   980→   980→    setSaving(true)
+   981→   981→    try {
+   982→   982→      await apiFetch('settings', {
+   983→   983→        method: 'PUT',
+   984→   984→        body: JSON.stringify(settings.map(s => ({ id: s.id, value: s.value }))),
+   985→   985→      })
+   986→   986→      alert('تم الحفظ بنجاح!')
+   987→   987→    } catch {}
+   988→   988→    setSaving(false)
+   989→   989→  }
+   990→   990→
+   991→   991→  const updateSetting = (id: string, value: string) => {
+   992→   992→    setSettings(settings.map(s => s.id === id ? { ...s, value } : s))
+   993→   993→  }
+   994→   994→
+   995→   995→  const groups = [...new Set(settings.map(s => s.group))]
+   996→   996→  const groupLabels: Record<string, string> = { general: 'عام', appearance: 'المظهر', seo: 'SEO', social: 'التواصل الاجتماعي', contact: 'التواصل' }
+   997→   997→
+   998→   998→  if (loading) return <div className="text-center py-8">جاري التحميل...</div>
+   999→   999→
+  1000→  1000→  return (
+  1001→  1001→    <div>
+  1002→  1002→      <div className="flex justify-between items-center mb-6">
+  1003→  1003→        <h2 className="text-2xl font-bold">الإعدادات</h2>
+  1004→  1004→        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-4 py-2 bg-[#1B5E20] text-white rounded-lg hover:bg-[#2E7D32] disabled:opacity-50">
+  1005→  1005→          <Icons name="save" className="w-4 h-4" /> {saving ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
+  1006→  1006→        </button>
+  1007→  1007→      </div>
+  1008→  1008→      <div className="space-y-6">
+  1009→  1009→        {groups.map(group => (
+  1010→  1010→          <div key={group} className="bg-white rounded-xl shadow-sm p-5">
+  1011→  1011→            <h3 className="font-bold mb-4 text-[#1B5E20]">{groupLabels[group] || group}</h3>
+  1012→  1012→            <div className="space-y-4">
+  1013→  1013→              {settings.filter(s => s.group === group).map(setting => (
+  1014→  1014→                <div key={setting.id}>
+  1015→  1015→                  <label className="block text-sm font-medium mb-1">{setting.label}</label>
+  1016→  1016→                  {setting.type === 'textarea' || setting.type === 'richtext' ? (
+  1017→  1017→                    <textarea value={setting.value} onChange={e => updateSetting(setting.id, e.target.value)}
+  1018→  1018→                      className="w-full border rounded-lg px-3 py-2 text-sm min-h-[80px]" />
+  1019→  1019→                  ) : setting.type === 'color' ? (
+  1020→  1020→                    <div className="flex gap-2 items-center">
+  1021→  1021→                      <input type="color" value={setting.value} onChange={e => updateSetting(setting.id, e.target.value)} className="w-10 h-10 rounded border" />
+  1022→  1022→                      <input type="text" value={setting.value} onChange={e => updateSetting(setting.id, e.target.value)} className="flex-1 border rounded-lg px-3 py-2 text-sm" dir="ltr" />
+  1023→  1023→                    </div>
+  1024→  1024→                  ) : (
+  1025→  1025→                    <input type={setting.type === 'number' ? 'number' : 'text'} value={setting.value} onChange={e => updateSetting(setting.id, e.target.value)}
+  1026→  1026→                      className="w-full border rounded-lg px-3 py-2 text-sm" dir={setting.type === 'image' ? 'ltr' : 'rtl'} />
+  1027→  1027→                  )}
+  1028→  1028→                </div>
+  1029→  1029→              ))}
+  1030→  1030→            </div>
+  1031→  1031→          </div>
+  1032→  1032→        ))}
+  1033→  1033→      </div>
+  1034→  1034→    </div>
+  1035→  1035→  )
+  1036→  1036→}
+  1037→  1037→
+  1038→  1038→// ============================================================
+  1039→  1039→// MAIN APP
+  1040→  1040→// ============================================================
+  1041→  1041→export default function Home() {
+  1042→  1042→  // State
+  1043→  1043→  const [isAdmin, setIsAdmin] = useState(false)
+  1044→  1044→  const [isLoggingIn, setIsLoggingIn] = useState(false)
+  1045→  1045→  const [loginEmail, setLoginEmail] = useState('')
+  1046→  1046→  const [loginPassword, setLoginPassword] = useState('')
+  1047→  1047→  const [loginError, setLoginError] = useState('')
+  1048→  1048→  const [adminView, setAdminView] = useState<AdminView>('dashboard')
+  1049→  1049→  const [initialized, setInitialized] = useState(false)
+  1050→  1050→
+  1051→  1051→  // Data state
+  1052→  1052→  const [navigation, setNavigation] = useState<NavItem[]>([])
+  1053→  1053→  const [news, setNews] = useState<NewsItem[]>([])
+  1054→  1054→  const [categories, setCategories] = useState<AwardCategory[]>([])
+  1055→  1055→  const [volunteerFields, setVolunteerFields] = useState<VolunteerField[]>([])
+  1056→  1056→  const [steps, setSteps] = useState<Step[]>([])
+  1057→  1057→  const [partners, setPartners] = useState<Partner[]>([])
+  1058→  1058→  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([])
+  1059→  1059→  const [statistics, setStatistics] = useState<Statistic[]>([])
+  1060→  1060→  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([])
+  1061→  1061→  const [aboutSections, setAboutSections] = useState<AboutSection[]>([])
+  1062→  1062→
+  1063→  1063→  // Initialize database
+  1064→  1064→  useEffect(() => {
+  1065→  1065→    fetch('/api/init').then(() => setInitialized(true)).catch(() => setInitialized(true))
+  1066→  1066→  }, [])
+  1067→  1067→
+  1068→  1068→  // Load public data
+  1069→  1069→  useEffect(() => {
+  1070→  1070→    if (!initialized) return
+  1071→  1071→    const loadData = async () => {
+  1072→  1072→      try {
+  1073→  1073→        const [nav, n, cat, vf, s, p, hs, stat, sl, about] = await Promise.all([
+  1074→  1074→          apiFetch('navigation?active=true'), apiFetch('news?published=true&limit=6'),
+  1075→  1075→          apiFetch('categories?active=true'), apiFetch('volunteer-fields?active=true'),
+  1076→  1076→          apiFetch('steps?active=true'), apiFetch('partners?active=true'),
+  1077→  1077→          apiFetch('hero-slides?active=true'), apiFetch('statistics'),
+  1078→  1078→          apiFetch('social-links?active=true'), apiFetch('about-sections'),
+  1079→  1079→        ])
+  1080→  1080→        setNavigation(nav); setNews(n); setCategories(cat); setVolunteerFields(vf)
+  1081→  1081→        setSteps(s); setPartners(p); setHeroSlides(hs); setStatistics(stat)
+  1082→  1082→        setSocialLinks(sl); setAboutSections(about)
+  1083→  1083→      } catch (e) {
+  1084→  1084→        console.error('Failed to load data:', e)
+  1085→  1085→      }
+  1086→  1086→    }
+  1087→  1087→    loadData()
+  1088→  1088→  }, [initialized])
+  1089→  1089→
+  1090→  1090→  const handleLogin = async () => {
+  1091→  1091→    setLoginError('')
+  1092→  1092→    try {
+  1093→  1093→      const res = await fetch('/api/auth', {
+  1094→  1094→        method: 'POST',
+  1095→  1095→        headers: { 'Content-Type': 'application/json' },
+  1096→  1096→        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+  1097→  1097→      })
+  1098→  1098→      if (res.ok) {
+  1099→  1099→        setIsAdmin(true)
+  1100→  1100→        setIsLoggingIn(false)
+  1101→  1101→        setLoginEmail('')
+  1102→  1102→        setLoginPassword('')
+  1103→  1103→      } else {
+  1104→  1104→        setLoginError('بيانات الدخول غير صحيحة')
+  1105→  1105→      }
+  1106→  1106→    } catch {
+  1107→  1107→      setLoginError('حدث خطأ في الاتصال')
+  1108→  1108→    }
+  1109→  1109→  }
+  1110→  1110→
+  1111→  1111→  // Admin CRUD views
+  1112→  1112→  const renderAdminView = () => {
+  1113→  1113→    switch (adminView) {
+  1114→  1114→      case 'dashboard': return <DashboardView />
+  1115→  1115→      case 'builder': return <BuilderView />
+  1116→  1116→      case 'settings': return <SettingsView />
+  1117→  1117→      case 'news': return (
+  1118→  1118→        <GenericCRUDView<NewsItem>
+  1119→  1119→          collection="news" title="الأخبار"
+  1120→  1120→          columns={[
+  1121→  1121→            { key: 'title', label: 'العنوان' },
+  1122→  1122→            { key: 'published', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.published ? 'منشور' : 'مسودة'}</span> },
+  1123→  1123→            { key: 'publishedAt', label: 'تاريخ النشر', render: (item) => item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('ar-JO') : '-' },
+  1124→  1124→          ]}
+  1125→  1125→          newItemTemplate={{ id: '', title: '', slug: '', summary: '', content: '', image: '', featured: false, published: false, publishedAt: new Date().toISOString(), createdAt: '', updatedAt: '' }}
+  1126→  1126→          renderForm={(item, onChange) => (
+  1127→  1127→            <div className="space-y-4">
+  1128→  1128→              <div><label className="block text-sm font-medium mb-1">العنوان</label><input type="text" value={item.title} onChange={e => onChange({ ...item, title: e.target.value, slug: e.target.value.replace(/\s+/g, '-').replace(/[^\w\u0600-\u06FF-]/g, '') })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1129→  1129→              <div><label className="block text-sm font-medium mb-1">الرابط</label><input type="text" value={item.slug} onChange={e => onChange({ ...item, slug: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1130→  1130→              <div><label className="block text-sm font-medium mb-1">الملخص</label><textarea value={item.summary || ''} onChange={e => onChange({ ...item, summary: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm min-h-[60px]" /></div>
+  1131→  1131→              <div><label className="block text-sm font-medium mb-1">المحتوى</label><textarea value={item.content} onChange={e => onChange({ ...item, content: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm min-h-[120px]" /></div>
+  1132→  1132→              <div><label className="block text-sm font-medium mb-1">رابط الصورة</label><input type="text" value={item.image || ''} onChange={e => onChange({ ...item, image: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1133→  1133→              <div className="flex gap-4">
+  1134→  1134→                <label className="flex items-center gap-2"><input type="checkbox" checked={item.published} onChange={e => onChange({ ...item, published: e.target.checked })} /> منشور</label>
+  1135→  1135→                <label className="flex items-center gap-2"><input type="checkbox" checked={item.featured} onChange={e => onChange({ ...item, featured: e.target.checked })} /> مميز</label>
+  1136→  1136→              </div>
+  1137→  1137→            </div>
+  1138→  1138→          )}
+  1139→  1139→        />
+  1140→  1140→      )
+  1141→  1141→      case 'categories': return (
+  1142→  1142→        <GenericCRUDView<AwardCategory>
+  1143→  1143→          collection="categories" title="فئات الجائزة"
+  1144→  1144→          columns={[
+  1145→  1145→            { key: 'icon', label: 'الأيقونة', render: (item) => <span className="text-xl">{item.icon}</span> },
+  1146→  1146→            { key: 'title', label: 'العنوان' },
+  1147→  1147→            { key: 'active', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.active ? 'نشط' : 'غير نشط'}</span> },
+  1148→  1148→          ]}
+  1149→  1149→          newItemTemplate={{ id: '', title: '', slug: '', description: '', icon: '🏆', image: '', order: 0, active: true, criteria: '', createdAt: '', updatedAt: '' }}
+  1150→  1150→          renderForm={(item, onChange) => (
+  1151→  1151→            <div className="space-y-4">
+  1152→  1152→              <div><label className="block text-sm font-medium mb-1">العنوان</label><input type="text" value={item.title} onChange={e => onChange({ ...item, title: e.target.value, slug: e.target.value.replace(/\s+/g, '-') })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1153→  1153→              <div><label className="block text-sm font-medium mb-1">الأيقونة</label><input type="text" value={item.icon || ''} onChange={e => onChange({ ...item, icon: e.target.value })} className="w-10 border rounded-lg px-3 py-2 text-sm text-center text-2xl" /></div>
+  1154→  1154→              <div><label className="block text-sm font-medium mb-1">الوصف</label><textarea value={item.description || ''} onChange={e => onChange({ ...item, description: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm min-h-[80px]" /></div>
+  1155→  1155→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.active} onChange={e => onChange({ ...item, active: e.target.checked })} /> نشط</label></div>
+  1156→  1156→            </div>
+  1157→  1157→          )}
+  1158→  1158→        />
+  1159→  1159→      )
+  1160→  1160→      case 'volunteer-fields': return (
+  1161→  1161→        <GenericCRUDView<VolunteerField>
+  1162→  1162→          collection="volunteer-fields" title="مجالات التطوع"
+  1163→  1163→          columns={[
+  1164→  1164→            { key: 'icon', label: 'الأيقونة', render: (item) => <span className="text-xl">{item.icon}</span> },
+  1165→  1165→            { key: 'title', label: 'العنوان' },
+  1166→  1166→            { key: 'active', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.active ? 'نشط' : 'غير نشط'}</span> },
+  1167→  1167→          ]}
+  1168→  1168→          newItemTemplate={{ id: '', title: '', slug: '', description: '', icon: '🤝', image: '', order: 0, active: true, createdAt: '', updatedAt: '' }}
+  1169→  1169→          renderForm={(item, onChange) => (
+  1170→  1170→            <div className="space-y-4">
+  1171→  1171→              <div><label className="block text-sm font-medium mb-1">العنوان</label><input type="text" value={item.title} onChange={e => onChange({ ...item, title: e.target.value, slug: e.target.value.replace(/\s+/g, '-') })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1172→  1172→              <div><label className="block text-sm font-medium mb-1">الأيقونة</label><input type="text" value={item.icon || ''} onChange={e => onChange({ ...item, icon: e.target.value })} className="w-10 border rounded-lg px-3 py-2 text-sm text-center text-2xl" /></div>
+  1173→  1173→              <div><label className="block text-sm font-medium mb-1">الوصف</label><textarea value={item.description || ''} onChange={e => onChange({ ...item, description: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm min-h-[60px]" /></div>
+  1174→  1174→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.active} onChange={e => onChange({ ...item, active: e.target.checked })} /> نشط</label></div>
+  1175→  1175→            </div>
+  1176→  1176→          )}
+  1177→  1177→        />
+  1178→  1178→      )
+  1179→  1179→      case 'partners': return (
+  1180→  1180→        <GenericCRUDView<Partner>
+  1181→  1181→          collection="partners" title="الشركاء"
+  1182→  1182→          columns={[
+  1183→  1183→            { key: 'name', label: 'الاسم' },
+  1184→  1184→            { key: 'type', label: 'النوع' },
+  1185→  1185→            { key: 'active', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.active ? 'نشط' : 'غير نشط'}</span> },
+  1186→  1186→          ]}
+  1187→  1187→          newItemTemplate={{ id: '', name: '', logo: '', url: '', order: 0, active: true, type: 'partner', createdAt: '', updatedAt: '' }}
+  1188→  1188→          renderForm={(item, onChange) => (
+  1189→  1189→            <div className="space-y-4">
+  1190→  1190→              <div><label className="block text-sm font-medium mb-1">الاسم</label><input type="text" value={item.name} onChange={e => onChange({ ...item, name: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1191→  1191→              <div><label className="block text-sm font-medium mb-1">رابط الشعار</label><input type="text" value={item.logo} onChange={e => onChange({ ...item, logo: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1192→  1192→              <div><label className="block text-sm font-medium mb-1">الموقع</label><input type="text" value={item.url || ''} onChange={e => onChange({ ...item, url: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1193→  1193→              <div><label className="block text-sm font-medium mb-1">النوع</label><select value={item.type} onChange={e => onChange({ ...item, type: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm"><option value="partner">شريك</option><option value="sponsor">راعي</option><option value="supporter">داعم</option></select></div>
+  1194→  1194→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.active} onChange={e => onChange({ ...item, active: e.target.checked })} /> نشط</label></div>
+  1195→  1195→            </div>
+  1196→  1196→          )}
+  1197→  1197→        />
+  1198→  1198→      )
+  1199→  1199→      case 'hero-slides': return (
+  1200→  1200→        <GenericCRUDView<HeroSlide>
+  1201→  1201→          collection="hero-slides" title="الشرائح الرئيسية"
+  1202→  1202→          columns={[
+  1203→  1203→            { key: 'title', label: 'العنوان' },
+  1204→  1204→            { key: 'order', label: 'الترتيب' },
+  1205→  1205→            { key: 'active', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.active ? 'نشط' : 'غير نشط'}</span> },
+  1206→  1206→          ]}
+  1207→  1207→          newItemTemplate={{ id: '', title: '', subtitle: '', image: '', link: '', linkText: '', order: 0, active: true, createdAt: '', updatedAt: '' }}
+  1208→  1208→          renderForm={(item, onChange) => (
+  1209→  1209→            <div className="space-y-4">
+  1210→  1210→              <div><label className="block text-sm font-medium mb-1">العنوان</label><input type="text" value={item.title} onChange={e => onChange({ ...item, title: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1211→  1211→              <div><label className="block text-sm font-medium mb-1">العنوان الفرعي</label><input type="text" value={item.subtitle || ''} onChange={e => onChange({ ...item, subtitle: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1212→  1212→              <div><label className="block text-sm font-medium mb-1">رابط الصورة</label><input type="text" value={item.image} onChange={e => onChange({ ...item, image: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1213→  1213→              <div><label className="block text-sm font-medium mb-1">نص الزر</label><input type="text" value={item.linkText || ''} onChange={e => onChange({ ...item, linkText: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1214→  1214→              <div><label className="block text-sm font-medium mb-1">رابط الزر</label><input type="text" value={item.link || ''} onChange={e => onChange({ ...item, link: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1215→  1215→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.active} onChange={e => onChange({ ...item, active: e.target.checked })} /> نشط</label></div>
+  1216→  1216→            </div>
+  1217→  1217→          )}
+  1218→  1218→        />
+  1219→  1219→      )
+  1220→  1220→      case 'steps': return (
+  1221→  1221→        <GenericCRUDView<Step>
+  1222→  1222→          collection="steps" title="الخطوات"
+  1223→  1223→          columns={[
+  1224→  1224→            { key: 'icon', label: 'الأيقونة', render: (item) => <span className="text-xl">{item.icon}</span> },
+  1225→  1225→            { key: 'title', label: 'العنوان' },
+  1226→  1226→            { key: 'active', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.active ? 'نشط' : 'غير نشط'}</span> },
+  1227→  1227→          ]}
+  1228→  1228→          newItemTemplate={{ id: '', title: '', description: '', icon: '📝', order: 0, active: true, createdAt: '', updatedAt: '' }}
+  1229→  1229→          renderForm={(item, onChange) => (
+  1230→  1230→            <div className="space-y-4">
+  1231→  1231→              <div><label className="block text-sm font-medium mb-1">العنوان</label><input type="text" value={item.title} onChange={e => onChange({ ...item, title: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1232→  1232→              <div><label className="block text-sm font-medium mb-1">الأيقونة</label><input type="text" value={item.icon || ''} onChange={e => onChange({ ...item, icon: e.target.value })} className="w-10 border rounded-lg px-3 py-2 text-sm text-center text-2xl" /></div>
+  1233→  1233→              <div><label className="block text-sm font-medium mb-1">الوصف</label><textarea value={item.description || ''} onChange={e => onChange({ ...item, description: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm min-h-[60px]" /></div>
+  1234→  1234→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.active} onChange={e => onChange({ ...item, active: e.target.checked })} /> نشط</label></div>
+  1235→  1235→            </div>
+  1236→  1236→          )}
+  1237→  1237→        />
+  1238→  1238→      )
+  1239→  1239→      case 'statistics': return (
+  1240→  1240→        <GenericCRUDView<Statistic>
+  1241→  1241→          collection="statistics" title="الإحصائيات"
+  1242→  1242→          columns={[
+  1243→  1243→            { key: 'icon', label: 'الأيقونة', render: (item) => <span className="text-xl">{item.icon}</span> },
+  1244→  1244→            { key: 'label', label: 'التسمية' },
+  1245→  1245→            { key: 'value', label: 'القيمة' },
+  1246→  1246→          ]}
+  1247→  1247→          newItemTemplate={{ id: '', label: '', value: '', icon: '📊', order: 0 }}
+  1248→  1248→          renderForm={(item, onChange) => (
+  1249→  1249→            <div className="space-y-4">
+  1250→  1250→              <div><label className="block text-sm font-medium mb-1">التسمية</label><input type="text" value={item.label} onChange={e => onChange({ ...item, label: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1251→  1251→              <div><label className="block text-sm font-medium mb-1">القيمة</label><input type="text" value={item.value} onChange={e => onChange({ ...item, value: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1252→  1252→              <div><label className="block text-sm font-medium mb-1">الأيقونة</label><input type="text" value={item.icon || ''} onChange={e => onChange({ ...item, icon: e.target.value })} className="w-10 border rounded-lg px-3 py-2 text-sm text-center text-2xl" /></div>
+  1253→  1253→            </div>
+  1254→  1254→          )}
+  1255→  1255→        />
+  1256→  1256→      )
+  1257→  1257→      case 'social-links': return (
+  1258→  1258→        <GenericCRUDView<SocialLink>
+  1259→  1259→          collection="social-links" title="روابط التواصل"
+  1260→  1260→          columns={[
+  1261→  1261→            { key: 'platform', label: 'المنصة' },
+  1262→  1262→            { key: 'url', label: 'الرابط' },
+  1263→  1263→            { key: 'active', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.active ? 'نشط' : 'غير نشط'}</span> },
+  1264→  1264→          ]}
+  1265→  1265→          newItemTemplate={{ id: '', platform: '', url: '', icon: '', order: 0, active: true }}
+  1266→  1266→          renderForm={(item, onChange) => (
+  1267→  1267→            <div className="space-y-4">
+  1268→  1268→              <div><label className="block text-sm font-medium mb-1">المنصة</label><select value={item.platform} onChange={e => onChange({ ...item, platform: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm"><option value="facebook">Facebook</option><option value="twitter">Twitter</option><option value="instagram">Instagram</option><option value="youtube">YouTube</option><option value="linkedin">LinkedIn</option></select></div>
+  1269→  1269→              <div><label className="block text-sm font-medium mb-1">الرابط</label><input type="text" value={item.url} onChange={e => onChange({ ...item, url: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1270→  1270→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.active} onChange={e => onChange({ ...item, active: e.target.checked })} /> نشط</label></div>
+  1271→  1271→            </div>
+  1272→  1272→          )}
+  1273→  1273→        />
+  1274→  1274→      )
+  1275→  1275→      case 'navigation': return (
+  1276→  1276→        <GenericCRUDView<NavItem>
+  1277→  1277→          collection="navigation" title="القوائم"
+  1278→  1278→          columns={[
+  1279→  1279→            { key: 'label', label: 'التسمية' },
+  1280→  1280→            { key: 'url', label: 'الرابط' },
+  1281→  1281→            { key: 'active', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.active ? 'نشط' : 'غير نشط'}</span> },
+  1282→  1282→          ]}
+  1283→  1283→          newItemTemplate={{ id: '', label: '', url: '', order: 0, active: true, target: '_self' }}
+  1284→  1284→          renderForm={(item, onChange) => (
+  1285→  1285→            <div className="space-y-4">
+  1286→  1286→              <div><label className="block text-sm font-medium mb-1">التسمية</label><input type="text" value={item.label} onChange={e => onChange({ ...item, label: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1287→  1287→              <div><label className="block text-sm font-medium mb-1">الرابط</label><input type="text" value={item.url} onChange={e => onChange({ ...item, url: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1288→  1288→              <div><label className="block text-sm font-medium mb-1">الترتيب</label><input type="number" value={item.order} onChange={e => onChange({ ...item, order: parseInt(e.target.value) })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1289→  1289→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.active} onChange={e => onChange({ ...item, active: e.target.checked })} /> نشط</label></div>
+  1290→  1290→            </div>
+  1291→  1291→          )}
+  1292→  1292→        />
+  1293→  1293→      )
+  1294→  1294→      case 'pages': return (
+  1295→  1295→        <GenericCRUDView<PageItem>
+  1296→  1296→          collection="pages" title="الصفحات"
+  1297→  1297→          columns={[
+  1298→  1298→            { key: 'title', label: 'العنوان' },
+  1299→  1299→            { key: 'slug', label: 'الرابط', render: (item) => <span className="text-sm text-gray-400">/{item.slug}</span> },
+  1300→  1300→            { key: 'published', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.published ? 'منشور' : 'مسودة'}</span> },
+  1301→  1301→          ]}
+  1302→  1302→          newItemTemplate={{ id: '', title: '', slug: '', content: '', published: false, order: 0, template: 'default', createdAt: '', updatedAt: '' }}
+  1303→  1303→          renderForm={(item, onChange) => (
+  1304→  1304→            <div className="space-y-4">
+  1305→  1305→              <div><label className="block text-sm font-medium mb-1">العنوان</label><input type="text" value={item.title} onChange={e => onChange({ ...item, title: e.target.value, slug: e.target.value.replace(/\s+/g, '-') })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1306→  1306→              <div><label className="block text-sm font-medium mb-1">الرابط</label><input type="text" value={item.slug} onChange={e => onChange({ ...item, slug: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1307→  1307→              <div><label className="block text-sm font-medium mb-1">المحتوى (HTML)</label><textarea value={item.content} onChange={e => onChange({ ...item, content: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm min-h-[200px] font-mono" dir="ltr" /></div>
+  1308→  1308→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.published} onChange={e => onChange({ ...item, published: e.target.checked })} /> منشور</label></div>
+  1309→  1309→            </div>
+  1310→  1310→          )}
+  1311→  1311→        />
+  1312→  1312→      )
+  1313→  1313→      case 'events': return (
+  1314→  1314→        <GenericCRUDView<EventItem>
+  1315→  1315→          collection="events" title="الفعاليات"
+  1316→  1316→          columns={[
+  1317→  1317→            { key: 'title', label: 'العنوان' },
+  1318→  1318→            { key: 'location', label: 'المكان' },
+  1319→  1319→            { key: 'startDate', label: 'التاريخ', render: (item) => new Date(item.startDate).toLocaleDateString('ar-JO') },
+  1320→  1320→          ]}
+  1321→  1321→          newItemTemplate={{ id: '', title: '', slug: '', description: '', content: '', image: '', location: '', startDate: new Date().toISOString(), published: false, createdAt: '', updatedAt: '' }}
+  1322→  1322→          renderForm={(item, onChange) => (
+  1323→  1323→            <div className="space-y-4">
+  1324→  1324→              <div><label className="block text-sm font-medium mb-1">العنوان</label><input type="text" value={item.title} onChange={e => onChange({ ...item, title: e.target.value, slug: e.target.value.replace(/\s+/g, '-') })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1325→  1325→              <div><label className="block text-sm font-medium mb-1">المكان</label><input type="text" value={item.location || ''} onChange={e => onChange({ ...item, location: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1326→  1326→              <div><label className="block text-sm font-medium mb-1">التاريخ</label><input type="datetime-local" value={item.startDate ? item.startDate.slice(0, 16) : ''} onChange={e => onChange({ ...item, startDate: new Date(e.target.value).toISOString() })} className="w-full border rounded-lg px-3 py-2 text-sm" dir="ltr" /></div>
+  1327→  1327→              <div><label className="block text-sm font-medium mb-1">الوصف</label><textarea value={item.description || ''} onChange={e => onChange({ ...item, description: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm min-h-[80px]" /></div>
+  1328→  1328→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.published} onChange={e => onChange({ ...item, published: e.target.checked })} /> منشور</label></div>
+  1329→  1329→            </div>
+  1330→  1330→          )}
+  1331→  1331→        />
+  1332→  1332→      )
+  1333→  1333→      case 'about-sections': return (
+  1334→  1334→        <GenericCRUDView<AboutSection>
+  1335→  1335→          collection="about-sections" title="من نحن"
+  1336→  1336→          columns={[
+  1337→  1337→            { key: 'title', label: 'العنوان' },
+  1338→  1338→            { key: 'active', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.active ? 'نشط' : 'غير نشط'}</span> },
+  1339→  1339→          ]}
+  1340→  1340→          newItemTemplate={{ id: '', title: '', content: '', image: '', order: 0, active: true, createdAt: '', updatedAt: '' }}
+  1341→  1341→          renderForm={(item, onChange) => (
+  1342→  1342→            <div className="space-y-4">
+  1343→  1343→              <div><label className="block text-sm font-medium mb-1">العنوان</label><input type="text" value={item.title} onChange={e => onChange({ ...item, title: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm" /></div>
+  1344→  1344→              <div><label className="block text-sm font-medium mb-1">المحتوى (HTML)</label><textarea value={item.content} onChange={e => onChange({ ...item, content: e.target.value })} className="w-full border rounded-lg px-3 py-2 text-sm min-h-[200px] font-mono" dir="ltr" /></div>
+  1345→  1345→              <div><label className="flex items-center gap-2"><input type="checkbox" checked={item.active} onChange={e => onChange({ ...item, active: e.target.checked })} /> نشط</label></div>
+  1346→  1346→            </div>
+  1347→  1347→          )}
+  1348→  1348→        />
+  1349→  1349→      )
+  1350→  1350→      case 'media': return <MediaView />
+  1351→  1351→      case 'messages': return <MessagesView />
+  1352→  1352→      case 'users': return <UsersView />
+  1353→  1353→      default: return <DashboardView />
+  1354→  1354→    }
+  1355→  1355→  }
+  1356→  1356→
+  1357→  1357→  // Media Library View
+  1358→  1358→  function MediaView() {
+  1359→  1359→    const [media, setMedia] = useState<MediaItem[]>([])
+  1360→  1360→
+  1361→  1361→    useEffect(() => {
+  1362→  1362→      apiFetch('media').then(setMedia).catch(() => {})
+  1363→  1363→    }, [])
+  1364→  1364→
+  1365→  1365→    return (
+  1366→  1366→      <div>
+  1367→  1367→        <h2 className="text-2xl font-bold mb-6">مكتبة الوسائط</h2>
+  1368→  1368→        <div className="bg-white rounded-xl shadow-sm p-5">
+  1369→  1369→          <div className="grid grid-cols-4 gap-4">
+  1370→  1370→            {media.map(item => (
+  1371→  1371→              <div key={item.id} className="border rounded-lg p-3 text-center">
+  1372→  1372→                <div className="h-24 bg-gray-100 rounded flex items-center justify-center mb-2">
+  1373→  1373→                  <Icons name="image" className="w-8 h-8 text-gray-400" />
+  1374→  1374→                </div>
+  1375→  1375→                <p className="text-xs truncate">{item.name}</p>
+  1376→  1376→              </div>
+  1377→  1377→            ))}
+  1378→  1378→            {media.length === 0 && (
+  1379→  1379→              <div className="col-span-4 text-center py-8 text-gray-400">
+  1380→  1380→                لا توجد ملفات. قم برفع ملفاتك من هنا.
+  1381→  1381→              </div>
+  1382→  1382→            )}
+  1383→  1383→          </div>
+  1384→  1384→        </div>
+  1385→  1385→      </div>
+  1386→  1386→    )
+  1387→  1387→  }
+  1388→  1388→
+  1389→  1389→  // Messages View
+  1390→  1390→  function MessagesView() {
+  1391→  1391→    const [messages, setMessages] = useState<ContactMessage[]>([])
+  1392→  1392→
+  1393→  1393→    useEffect(() => {
+  1394→  1394→      apiFetch('messages').then(setMessages).catch(() => {})
+  1395→  1395→    }, [])
+  1396→  1396→
+  1397→  1397→    return (
+  1398→  1398→      <div>
+  1399→  1399→        <h2 className="text-2xl font-bold mb-6">الرسائل</h2>
+  1400→  1400→        <div className="space-y-3">
+  1401→  1401→          {messages.map(msg => (
+  1402→  1402→            <div key={msg.id} className={`bg-white rounded-xl shadow-sm p-5 ${!msg.read ? 'border-r-4 border-[#1B5E20]' : ''}`}>
+  1403→  1403→              <div className="flex justify-between items-start">
+  1404→  1404→                <div>
+  1405→  1405→                  <h3 className="font-bold">{msg.name}</h3>
+  1406→  1406→                  <p className="text-sm text-gray-500">{msg.email}</p>
+  1407→  1407→                </div>
+  1408→  1408→                <span className="text-xs text-gray-400">{new Date(msg.createdAt).toLocaleDateString('ar-JO')}</span>
+  1409→  1409→              </div>
+  1410→  1410→              {msg.subject && <p className="font-medium text-sm mt-2">{msg.subject}</p>}
+  1411→  1411→              <p className="text-sm text-gray-600 mt-1">{msg.message}</p>
+  1412→  1412→            </div>
+  1413→  1413→          ))}
+  1414→  1414→          {messages.length === 0 && <div className="text-center py-8 text-gray-400">لا توجد رسائل</div>}
+  1415→  1415→        </div>
+  1416→  1416→      </div>
+  1417→  1417→    )
+  1418→  1418→  }
+  1419→  1419→
+  1420→  1420→  // Users View
+  1421→  1421→  function UsersView() {
+  1422→  1422→    const [users, setUsers] = useState<UserItem[]>([])
+  1423→  1423→
+  1424→  1424→    useEffect(() => {
+  1425→  1425→      apiFetch('users').then(setUsers).catch(() => {})
+  1426→  1426→    }, [])
+  1427→  1427→
+  1428→  1428→    return (
+  1429→  1429→      <div>
+  1430→  1430→        <h2 className="text-2xl font-bold mb-6">المستخدمون</h2>
+  1431→  1431→        <DataTable<UserItem>
+  1432→  1432→          items={users}
+  1433→  1433→          columns={[
+  1434→  1434→            { key: 'name', label: 'الاسم' },
+  1435→  1435→            { key: 'email', label: 'البريد' },
+  1436→  1436→            { key: 'role', label: 'الدور' },
+  1437→  1437→            { key: 'active', label: 'الحالة', render: (item) => <span className={`text-xs px-2 py-1 rounded-full ${item.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{item.active ? 'نشط' : 'غير نشط'}</span> },
+  1438→  1438→          ]}
+  1439→  1439→          onEdit={() => {}}
+  1440→  1440→          onDelete={() => {}}
+  1441→  1441→        />
+  1442→  1442→      </div>
+  1443→  1443→    )
+  1444→  1444→  }
+  1445→  1445→
+  1446→  1446→  // LOGIN MODAL
+  1447→  1447→  if (isLoggingIn) {
+  1448→  1448→    return (
+  1449→  1449→      <div className="min-h-screen bg-gray-100 flex items-center justify-center" dir="rtl">
+  1450→  1450→        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+  1451→  1451→          <div className="text-center mb-6">
+  1452→  1452→            <div className="w-16 h-16 bg-[#1B5E20] rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">ج</div>
+  1453→  1453→            <h2 className="text-xl font-bold">تسجيل الدخول</h2>
+  1454→  1454→            <p className="text-sm text-gray-500 mt-1">لوحة تحكم CMS</p>
+  1455→  1455→          </div>
+  1456→  1456→          {loginError && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4">{loginError}</div>}
+  1457→  1457→          <div className="space-y-4">
+  1458→  1458→            <div>
+  1459→  1459→              <label className="block text-sm font-medium mb-1">البريد الإلكتروني</label>
+  1460→  1460→              <input type="email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)}
+  1461→  1461→                className="w-full border rounded-lg px-4 py-2.5" placeholder="admin@cms.com" />
+  1462→  1462→            </div>
+  1463→  1463→            <div>
+  1464→  1464→              <label className="block text-sm font-medium mb-1">كلمة المرور</label>
+  1465→  1465→              <input type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)}
+  1466→  1466→                className="w-full border rounded-lg px-4 py-2.5" placeholder="••••••••" />
+  1467→  1467→            </div>
+  1468→  1468→            <button onClick={handleLogin} className="w-full py-2.5 bg-[#1B5E20] text-white rounded-lg hover:bg-[#2E7D32] font-medium">
+  1469→  1469→              تسجيل الدخول
+  1470→  1470→            </button>
+  1471→  1471→            <button onClick={() => setIsLoggingIn(false)} className="w-full py-2.5 bg-gray-100 rounded-lg hover:bg-gray-200">
+  1472→  1472→              إلغاء
+  1473→  1473→            </button>
+  1474→  1474→          </div>
+  1475→  1475→          <p className="text-xs text-gray-400 mt-4 text-center">admin@cms.com / admin123</p>
+  1476→  1476→        </div>
+  1477→  1477→      </div>
+  1478→  1478→    )
+  1479→  1479→  }
+  1480→  1480→
+  1481→  1481→  // ADMIN PANEL
+  1482→  1482→  if (isAdmin) {
+  1483→  1483→    return (
+  1484→  1484→      <div className="flex min-h-screen bg-gray-100" dir="rtl">
+  1485→  1485→        <AdminSidebar currentView={adminView} onNavigate={setAdminView} onLogout={() => setIsAdmin(false)} />
+  1486→  1486→        <main className="flex-1 p-6 overflow-y-auto admin-scroll">
+  1487→  1487→          {renderAdminView()}
+  1488→  1488→        </main>
+  1489→  1489→      </div>
+  1490→  1490→    )
+  1491→  1491→  }
+  1492→  1492→
+  1493→  1493→  // PUBLIC WEBSITE
+  1494→  1494→  return (
+  1495→  1495→    <div className="min-h-screen flex flex-col" dir="rtl">
+  1496→  1496→      <PublicHeader navigation={navigation} onAdminClick={() => setIsLoggingIn(true)} />
+  1497→  1497→      <main className="flex-1">
+  1498→  1498→        <HeroSection slides={heroSlides} />
+  1499→  1499→        <NewsSection news={news} />
+  1500→  1500→        <AboutSection abouts={aboutSections} statistics={statistics} />
+  1501→  1501→        <CategoriesSection categories={categories} />
+  1502→  1502→        <VolunteerFieldsSection fields={volunteerFields} />
+  1503→  1503→        <StepsSection steps={steps} />
+  1504→  1504→        <PartnersSection partners={partners} />
+  1505→  1505→      </main>
+  1506→  1506→      <PublicFooter socialLinks={socialLinks} />
+  1507→  1507→    </div>
+  1508→  1508→  )
+  1509→  1509→}
+  1510→  1510→

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "1781796507703-l2ol3ow26",
+    "key": "site_name",
+    "value": "جائزة الحسين بن عبدالله الثاني للعمل التطوعي",
+    "group": "general",
+    "label": "اسم الموقع",
+    "type": "text"
+  },
+  {
+    "id": "1781796507703-bpud6i8j3",
+    "key": "site_description",
+    "value": "جائزة وطنية لتكريم وتشجيع العاملين في مجال العمل التطوعي",
+    "group": "general",
+    "label": "وصف الموقع",
+    "type": "textarea"
+  },
+  {
+    "id": "1781796507703-l085v3bt2",
+    "key": "site_logo",
+    "value": "/images/logo.png",
+    "group": "appearance",
+    "label": "شعار الموقع",
+    "type": "image"
+  },
+  {
+    "id": "1781796507703-cyri031gz",
+    "key": "primary_color",
+    "value": "#1B5E20",
+    "group": "appearance",
+    "label": "اللون الرئيسي",
+    "type": "color"
+  },
+  {
+    "id": "1781796507703-lddkw7a1i",
+    "key": "secondary_color",
+    "value": "#8D6E63",
+    "group": "appearance",
+    "label": "اللون الثانوي",
+    "type": "color"
+  },
+  {
+    "id": "1781796507703-686e9mzs5",
+    "key": "contact_email",
+    "value": "info@alhusseinvolunteeraward.jo",
+    "group": "contact",
+    "label": "البريد الإلكتروني",
+    "type": "text"
+  },
+  {
+    "id": "1781796507703-t2ux457n7",
+    "key": "contact_phone",
+    "value": "+962 6 1234567",
+    "group": "contact",
+    "label": "رقم الهاتف",
+    "type": "text"
+  },
+  {
+    "id": "1781796507703-q5ymd0b8h",
+    "key": "contact_address",
+    "value": "عمّان، المملكة الأردنية الهاشمية",
+    "group": "contact",
+    "label": "العنوان",
+    "type": "textarea"
+  }
+]

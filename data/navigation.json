@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1781796507702-rgz85tn6b",
+    "label": "الرئيسية",
+    "url": "/",
+    "order": 0,
+    "active": true,
+    "target": "_self"
+  },
+  {
+    "id": "1781796507702-it6n5m24g",
+    "label": "عن الجائزة",
+    "url": "/about",
+    "order": 1,
+    "active": true,
+    "target": "_self"
+  },
+  {
+    "id": "1781796507702-svsnt4d2u",
+    "label": "الفئات والشروط",
+    "url": "/categories",
+    "order": 2,
+    "active": true,
+    "target": "_self"
+  },
+  {
+    "id": "1781796507702-dbaothm9b",
+    "label": "الفعاليات",
+    "url": "/events",
+    "order": 3,
+    "active": true,
+    "target": "_self"
+  },
+  {
+    "id": "1781796507702-ea2kmibx9",
+    "label": "الشركاء",
+    "url": "/partners",
+    "order": 4,
+    "active": true,
+    "target": "_self"
+  },
+  {
+    "id": "1781796507702-74zdna58w",
+    "label": "الجائزة الدولية",
+    "url": "/international",
+    "order": 5,
+    "active": true,
+    "target": "_self"
+  }
+]

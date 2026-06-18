@@ -1,0 +1,79 @@
+[
+  {
+    "id": "1781796507703-pq3vnmkkn",
+    "title": "الصحة",
+    "slug": "health",
+    "description": "العمل التطوعي في القطاع الصحي",
+    "icon": "🏥",
+    "order": 0,
+    "active": true,
+    "createdAt": "2026-06-18T15:28:27.703Z",
+    "updatedAt": "2026-06-18T15:28:27.703Z"
+  },
+  {
+    "id": "1781796507703-hmq4hka4i",
+    "title": "التعليم",
+    "slug": "education",
+    "description": "العمل التطوعي في القطاع التعليمي",
+    "icon": "📚",
+    "order": 1,
+    "active": true,
+    "createdAt": "2026-06-18T15:28:27.703Z",
+    "updatedAt": "2026-06-18T15:28:27.703Z"
+  },
+  {
+    "id": "1781796507703-ujnf7dw3u",
+    "title": "البيئة",
+    "slug": "environment",
+    "description": "العمل التطوعي في حماية البيئة",
+    "icon": "🌿",
+    "order": 2,
+    "active": true,
+    "createdAt": "2026-06-18T15:28:27.703Z",
+    "updatedAt": "2026-06-18T15:28:27.703Z"
+  },
+  {
+    "id": "1781796507703-3f3joltf6",
+    "title": "التنمية المجتمعية",
+    "slug": "community",
+    "description": "العمل التطوعي في التنمية المجتمعية",
+    "icon": "🤝",
+    "order": 3,
+    "active": true,
+    "createdAt": "2026-06-18T15:28:27.703Z",
+    "updatedAt": "2026-06-18T15:28:27.703Z"
+  },
+  {
+    "id": "1781796507703-lv4y1up71",
+    "title": "الثقافة والفنون",
+    "slug": "culture",
+    "description": "العمل التطوعي في القطاع الثقافي",
+    "icon": "🎭",
+    "order": 4,
+    "active": true,
+    "createdAt": "2026-06-18T15:28:27.703Z",
+    "updatedAt": "2026-06-18T15:28:27.703Z"
+  },
+  {
+    "id": "1781796507703-11ftfgpli",
+    "title": "الرياضة",
+    "slug": "sports",
+    "description": "العمل التطوعي في القطاع الرياضي",
+    "icon": "⚽",
+    "order": 5,
+    "active": true,
+    "createdAt": "2026-06-18T15:28:27.703Z",
+    "updatedAt": "2026-06-18T15:28:27.703Z"
+  },
+  {
+    "id": "1781796507703-nhc6wgdyp",
+    "title": "الإغاثة والطوارئ",
+    "slug": "relief",
+    "description": "العمل التطوعي في الإغاثة",
+    "icon": "🆘",
+    "order": 6,
+    "active": true,
+    "createdAt": "2026-06-18T15:28:27.703Z",
+    "updatedAt": "2026-06-18T15:28:27.703Z"
+  }
+]

@@ -1,0 +1,294 @@
+// CMS Database Schema - PostgreSQL (Neon) compatible
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============================================
+// AUTH & USERS
+// ============================================
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String
+  password  String
+  role      String     @default("admin") // admin, editor, viewer
+  avatar    String?
+  active    Boolean    @default(true)
+  sessions  Session[]
+  pages     Page[]
+  news      News[]
+  events    Event[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ============================================
+// SITE SETTINGS
+// ============================================
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  group String @default("general") // general, appearance, seo, social, contact
+  label String
+  type  String @default("text") // text, textarea, richtext, image, color, boolean, number, json
+}
+
+model Navigation {
+  id       String       @id @default(cuid())
+  label    String
+  url      String
+  parentId String?
+  parent   Navigation?  @relation("NavChildren", fields: [parentId], references: [id])
+  children Navigation[] @relation("NavChildren")
+  order    Int          @default(0)
+  active   Boolean      @default(true)
+  target   String       @default("_self") // _self, _blank
+}
+
+// ============================================
+// PAGES (HTML Builder)
+// ============================================
+
+model Page {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String   // HTML content from builder
+  builderData String?  // JSON data for the page builder
+  metaTitle   String?
+  metaDesc    String?
+  metaImage   String?
+  published   Boolean  @default(false)
+  order       Int      @default(0)
+  template    String   @default("default") // default, fullwidth, sidebar
+  authorId    String?
+  author      User?    @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// NEWS / ARTICLES
+// ============================================
+
+model News {
+  id          String       @id @default(cuid())
+  title       String
+  slug        String       @unique
+  summary     String?
+  content     String       // HTML content
+  image       String?
+  categoryId  String?
+  category    NewsCategory? @relation(fields: [categoryId], references: [id])
+  featured    Boolean      @default(false)
+  published   Boolean      @default(false)
+  authorId    String?
+  author      User?        @relation(fields: [authorId], references: [id])
+  publishedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model NewsCategory {
+  id    String  @id @default(cuid())
+  name  String  @unique
+  slug  String  @unique
+  icon  String?
+  color String?
+  order Int     @default(0)
+  news  News[]
+}
+
+// ============================================
+// AWARD CATEGORIES
+// ============================================
+
+model AwardCategory {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  icon        String?
+  image       String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  criteria    String?  // HTML content for criteria/conditions
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// VOLUNTEER FIELDS
+// ============================================
+
+model VolunteerField {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  icon        String?
+  image       String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// EVENTS
+// ============================================
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  content     String?  // HTML content
+  image       String?
+  location    String?
+  startDate   DateTime
+  endDate     DateTime?
+  published   Boolean  @default(false)
+  authorId    String?
+  author      User?    @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// PARTNERS / SPONSORS
+// ============================================
+
+model Partner {
+  id        String   @id @default(cuid())
+  name      String
+  logo      String
+  url       String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  type      String   @default("partner") // partner, sponsor, supporter
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// MEDIA LIBRARY
+// ============================================
+
+model Media {
+  id         String   @id @default(cuid())
+  name       String
+  url        String
+  type       String   @default("image") // image, video, document
+  mimeType   String?
+  size       Int?
+  alt        String?
+  folder     String?  @default("general")
+  uploadedBy String?
+  createdAt  DateTime @default(now())
+}
+
+// ============================================
+// HERO / SLIDERS
+// ============================================
+
+model HeroSlide {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String?
+  image     String
+  link      String?
+  linkText  String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// STEPS / PROCESS
+// ============================================
+
+model Step {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  icon        String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// CONTACT / MESSAGES
+// ============================================
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  read      Boolean  @default(false)
+  replied   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ============================================
+// ABOUT SECTION
+// ============================================
+
+model AboutSection {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   // HTML content
+  image       String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// STATISTICS
+// ============================================
+
+model Statistic {
+  id    String @id @default(cuid())
+  label String
+  value String
+  icon  String?
+  order Int    @default(0)
+}
+
+// ============================================
+// SOCIAL LINKS
+// ============================================
+
+model SocialLink {
+  id       String @id @default(cuid())
+  platform String // facebook, twitter, instagram, linkedin, youtube, etc.
+  url      String
+  icon     String?
+  order    Int    @default(0)
+  active   Boolean @default(true)
+}

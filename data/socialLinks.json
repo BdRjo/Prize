@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1781796507703-8zyzij3yd",
+    "platform": "facebook",
+    "url": "https://facebook.com",
+    "icon": "facebook",
+    "order": 0,
+    "active": true
+  },
+  {
+    "id": "1781796507703-fryakap25",
+    "platform": "twitter",
+    "url": "https://twitter.com",
+    "icon": "twitter",
+    "order": 1,
+    "active": true
+  },
+  {
+    "id": "1781796507703-1jtruvm19",
+    "platform": "instagram",
+    "url": "https://instagram.com",
+    "icon": "instagram",
+    "order": 2,
+    "active": true
+  },
+  {
+    "id": "1781796507703-1xfnscvx1",
+    "platform": "youtube",
+    "url": "https://youtube.com",
+    "icon": "youtube",
+    "order": 3,
+    "active": true
+  },
+  {
+    "id": "1781796507703-1h5kphjvy",
+    "platform": "linkedin",
+    "url": "https://linkedin.com",
+    "icon": "linkedin",
+    "order": 4,
+    "active": true
+  }
+]

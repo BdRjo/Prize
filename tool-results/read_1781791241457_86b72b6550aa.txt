@@ -1,0 +1,502 @@
+   200→                                                <div class="action__inner ">
+   201→                                                    <img src="/libs/ACCC/TextSpacing.png" alt=" &#x62A;&#x628;&#x627;&#x639;&#x62F; &#x628;&#x633;&#x64A;&#x637;" />
+   202→                                                    &#x62A;&#x628;&#x627;&#x639;&#x62F; &#x628;&#x633;&#x64A;&#x637;
+   203→                                                    <div class="acc-dash me-1 mt-1"></div>
+   204→                                                </div>
+   205→                                            </a>
+   206→                                            <a id="textSpacing3" onclick="textSpacing3()" style="display: none">
+   207→                                                <div class="action__inner">
+   208→                                                    <img src="/libs/ACCC/TextSpacing.png" alt="Moderate Spacing" />
+   209→                                                    &#x62A;&#x628;&#x627;&#x639;&#x62F; &#x645;&#x62A;&#x648;&#x633;&#x637;
+   210→                                                    <div class="d-flex flex-row justify-contetn-between">
+   211→                                                        <div class="acc-dash me-1 mt-1"></div>
+   212→                                                        <div class="acc-dash me-1 mt-1"></div>
+   213→                                                    </div>
+   214→                                                </div>
+   215→                                            </a>
+   216→                                            <a id="textSpacing4" onclick="textSpacing4()" style="display: none">
+   217→                                                <div class="action__inner">
+   218→                                                    <img src="/libs/ACCC/TextSpacing.png" alt=" &#x62A;&#x628;&#x627;&#x639;&#x62F; &#x634;&#x62F;&#x64A;&#x62F;" />
+   219→                                                    &#x62A;&#x628;&#x627;&#x639;&#x62F; &#x634;&#x62F;&#x64A;&#x62F;
+   220→                                                    <div class="d-flex flex-row justify-contetn-between">
+   221→                                                        <div class="acc-dash me-1 mt-1"></div>
+   222→                                                        <div class="acc-dash me-1 mt-1"></div>
+   223→                                                        <div class="acc-dash me-1 mt-1"></div>
+   224→                                                    </div>
+   225→                                                </div>
+   226→                                            </a>
+   227→                                        </div>
+   228→                                    </div>
+   229→                                </div>
+   230→                                <div class="ally-action-item step-0 ally-action-item__ready">
+   231→                                    <div role="button" tabindex="0" class="action ally-action" data-uw-reader-content="Press enter to increase text spacing" aria-pressed="false">
+   232→                                        <div class="action__inner">
+   233→                                            <a id="biggerText1" onclick="biggerText1()" style="display: block">
+   234→                                                <div class="action__inner ">
+   235→                                                    <img src="/libs/ACCC/FontSize.png" alt=" &#x62D;&#x62C;&#x645; &#x627;&#x644;&#x62E;&#x637;" />
+   236→                                                    &#x62D;&#x62C;&#x645; &#x627;&#x644;&#x62E;&#x637;
+   237→                                                </div>
+   238→                                            </a>
+   239→                                            <a id="biggerText2" onclick="biggerText2()" style="display: none">
+   240→                                                <div class="action__inner ">
+   241→                                                    <img src="/libs/ACCC/FontSize.png" alt=" &#x62A;&#x643;&#x628;&#x64A;&#x631; &#x62D;&#x62C;&#x645; &#x627;&#x644;&#x62E;&#x637;" />
+   242→                                                    &#x623;
+   243→                                                    <div class="acc-dash me-1 mt-1"></div>
+   244→                                                </div>
+   245→                                            </a>
+   246→                                            <a id="biggerText3" onclick="biggerText3()" style="display: none">
+   247→                                                <div class="action__inner">
+   248→                                                    <img src="/libs/ACCC/FontSize.png" alt=" &#x62A;&#x643;&#x628;&#x64A;&#x631; &#x62D;&#x62C;&#x645; &#x627;&#x644;&#x62E;&#x637;" />
+   249→                                                    &#x623;&#x2B;
+   250→                                                    <div class="d-flex flex-row justify-contetn-between">
+   251→                                                        <div class="acc-dash me-1 mt-1"></div>
+   252→                                                        <div class="acc-dash me-1 mt-1"></div>
+   253→                                                    </div>
+   254→                                                </div>
+   255→                                            </a>
+   256→                                            <a id="biggerText4" onclick="biggerText4()" style="display: none">
+   257→                                                <div class="action__inner">
+   258→                                                    <img src="/libs/ACCC/FontSize.png" alt=" &#x62A;&#x643;&#x628;&#x64A;&#x631; &#x62D;&#x62C;&#x645; &#x627;&#x644;&#x62E;&#x637;" />
+   259→                                                    &#x623;&#x2B;&#x2B;
+   260→                                                    <div class="d-flex flex-row justify-contetn-between">
+   261→                                                        <div class="acc-dash me-1 mt-1"></div>
+   262→                                                        <div class="acc-dash me-1 mt-1"></div>
+   263→                                                        <div class="acc-dash me-1 mt-1"></div>
+   264→                                                    </div>
+   265→                                                </div>
+   266→                                            </a>
+   267→                                        </div>
+   268→                                    </div>
+   269→                                </div>
+   270→                                <div class="ally-action-item step-0 ally-action-item__ready">
+   271→                                    <div role="button" tabindex="0" class="action ally-action" data-uw-reader-content="Press enter to enable Dyslexia Friendly font" aria-pressed="false">
+   272→                                        <div class="action__inner">
+   273→                                            <a id="dyslexiaFriendly" onclick="dyslexiaFriendly()" style="display: block">
+   274→                                                <div class="action__inner ">
+   275→                                                    <img src="/libs/ACCC/FontType.png" alt=" &#x646;&#x648;&#x639; &#x627;&#x644;&#x62E;&#x637;" />
+   276→                                                    &#x646;&#x648;&#x639; &#x627;&#x644;&#x62E;&#x637;
+   277→                                                </div>
+   278→                                            </a>
+   279→                                            <a id="dyslexiaFriendly2" onclick="dyslexiaFriendly2()" style="display: none">
+   280→                                                <div class="action__inner ">
+   281→                                                    <img src="/libs/ACCC/FontType.png" alt=" &#x62E;&#x637; &#x642;&#x627;&#x628;&#x644; &#x644;&#x644;&#x642;&#x631;&#x623;&#x647;" />
+   282→                                                    &#x62E;&#x637; &#x642;&#x627;&#x628;&#x644; &#x644;&#x644;&#x642;&#x631;&#x623;&#x647;
+   283→                                                    <div class="acc-dash me-1 mt-1"></div>
+   284→                                                </div>
+   285→                                            </a>
+   286→                                            <a id="legibleFonts" onclick="legibleFonts()" style="display: none">
+   287→                                                <div class="action__inner ">
+   288→                                                    <img src="/libs/ACCC/FontType.png" alt=" &#x627;&#x644;&#x62E;&#x637; &#x627;&#x644;&#x648;&#x627;&#x636;&#x62D;" />
+   289→                                                    &#x627;&#x644;&#x62E;&#x637; &#x627;&#x644;&#x648;&#x627;&#x636;&#x62D;
+   290→                                                    <div class="d-flex flex-row justify-contetn-between">
+   291→                                                        <div class="acc-dash me-1 mt-1"></div>
+   292→                                                        <div class="acc-dash me-1 mt-1"></div>
+   293→                                                    </div>
+   294→                                                </div>
+   295→                                            </a>
+   296→                                        </div>
+   297→                                    </div>
+   298→                                </div>
+   299→                                <div class="ally-action-item step-0 ally-action-item__ready">
+   300→                                    <div role="button" tabindex="0" class="action ally-action" data-uw-reader-content="Press enter to enable enhanced cursor" aria-pressed="false">
+   301→                                        <div class="action__inner">
+   302→                                            <a id="cursor1" onclick="cursor1()" style="display: block">
+   303→                                                <div class="action__inner ">
+   304→                                                    <img src="/libs/ACCC/Cursor.png" alt=" &#x627;&#x644;&#x642;&#x631;&#x627;&#x621;&#x629;" />
+   305→                                                    &#x627;&#x644;&#x642;&#x631;&#x627;&#x621;&#x629;
+   306→                                                </div>
+   307→                                            </a>
+   308→                                            <a id="cursor2" onclick="cursor2()" style="display: none">
+   309→                                                <div class="action__inner ">
+   310→                                                    <img src="/libs/ACCC/Cursor.png" alt=" &#x645;&#x624;&#x634;&#x631; &#x643;&#x628;&#x64A;&#x631;" />
+   311→                                                    &#x645;&#x624;&#x634;&#x631; &#x643;&#x628;&#x64A;&#x631;
+   312→                                                    <div class="acc-dash me-1 mt-1"></div>
+   313→                                                </div>
+   314→                                            </a>
+   315→                                            <a id="cursor3" onclick="cursor3()" style="display: none">
+   316→                                                <div class="action__inner">
+   317→                                                    <img src="/libs/ACCC/Cursor.png" alt=" &#x645;&#x624;&#x634;&#x631; &#x627;&#x644;&#x642;&#x631;&#x627;&#x621;&#x629;" />
+   318→                                                    &#x645;&#x624;&#x634;&#x631; &#x627;&#x644;&#x642;&#x631;&#x627;&#x621;&#x629;
+   319→                                                    <div class="d-flex flex-row justify-contetn-between">
+   320→                                                        <div class="acc-dash me-1 mt-1"></div>
+   321→                                                        <div class="acc-dash me-1 mt-1"></div>
+   322→                                                    </div>
+   323→                                                </div>
+   324→                                            </a>
+   325→                                            <a id="cursor4" onclick="cursor4()" style="display: none">
+   326→                                                <div class="action__inner">
+   327→                                                    <img src="/libs/ACCC/Cursor.png" alt=" &#x62F;&#x644;&#x64A;&#x644; &#x627;&#x644;&#x642;&#x631;&#x627;&#x621;&#x629;" />
+   328→                                                    &#x62F;&#x644;&#x64A;&#x644; &#x627;&#x644;&#x642;&#x631;&#x627;&#x621;&#x629;
+   329→                                                    <div class="d-flex flex-row justify-contetn-between">
+   330→                                                        <div class="acc-dash me-1 mt-1"></div>
+   331→                                                        <div class="acc-dash me-1 mt-1"></div>
+   332→                                                        <div class="acc-dash me-1 mt-1"></div>
+   333→                                                    </div>
+   334→                                                </div>
+   335→                                            </a>
+   336→                                        </div>
+   337→                                    </div>
+   338→                                </div>
+   339→                                <div class="ally-action-item step-0 ally-action-item__ready">
+   340→                                    <div role="button" tabindex="0" class="action ally-action" data-uw-reader-content="Press enter to increase line height" aria-pressed="false">
+   341→                                        <div class="action__inner">
+   342→                                            <a id="lineHeight1" onclick="lineHeight1()" style="display: block">
+   343→                                                <div class="action__inner ">
+   344→                                                    <img src="/libs/ACCC/LineHeight.png" alt=" &#x627;&#x631;&#x62A;&#x641;&#x627;&#x639; &#x627;&#x644;&#x62E;&#x637;" />
+   345→                                                    &#x627;&#x631;&#x62A;&#x641;&#x627;&#x639; &#x627;&#x644;&#x62E;&#x637;
+   346→                                                </div>
+   347→                                            </a>
+   348→                                            <a id="lineHeight2" onclick="lineHeight2()" style="display: none">
+   349→                                                <div class="action__inner ">
+   350→                                                    <img src="/libs/ACCC/LineHeight.png" alt=" &#x627;&#x631;&#x62A;&#x641;&#x627;&#x639; &#x627;&#x644;&#x62E;&#x637;(0.75)" />
+   351→                                                    &#x627;&#x631;&#x62A;&#x641;&#x627;&#x639; &#x627;&#x644;&#x62E;&#x637;(0.75)
+   352→                                                    <div class="acc-dash me-1 mt-1"></div>
+   353→                                                </div>
+   354→                                            </a>
+   355→                                            <a id="lineHeight3" onclick="lineHeight3()" style="display: none">
+   356→                                                <div class="action__inner ">
+   357→                                                    <img src="/libs/ACCC/LineHeight.png" alt=" &#x627;&#x631;&#x62A;&#x641;&#x627;&#x639; &#x627;&#x644;&#x62E;&#x637;(1.75)" />
+   358→                                                    &#x627;&#x631;&#x62A;&#x641;&#x627;&#x639; &#x627;&#x644;&#x62E;&#x637;(1.75)
+   359→                                                    <div class="d-flex flex-row justify-contetn-between">
+   360→                                                        <div class="acc-dash me-1 mt-1"></div>
+   361→                                                        <div class="acc-dash me-1 mt-1"></div>
+   362→                                                    </div>
+   363→                                                </div>
+   364→                                            </a>
+   365→                                            <a id="lineHeight4" onclick="lineHeight4()" style="display: none">
+   366→                                                <div class="action__inner ">
+   367→                                                    <img src="/libs/ACCC/LineHeight.png" alt=" &#x627;&#x631;&#x62A;&#x641;&#x627;&#x639; &#x627;&#x644;&#x62E;&#x637;(2)" />
+   368→                                                    &#x627;&#x631;&#x62A;&#x641;&#x627;&#x639; &#x627;&#x644;&#x62E;&#x637;(2)
+   369→                                                    <div class="d-flex flex-row justify-contetn-between">
+   370→                                                        <div class="acc-dash me-1 mt-1"></div>
+   371→                                                        <div class="acc-dash me-1 mt-1"></div>
+   372→                                                        <div class="acc-dash me-1 mt-1"></div>
+   373→                                                    </div>
+   374→                                                </div>
+   375→                                            </a>
+   376→                                        </div>
+   377→                                    </div>
+   378→                                </div>
+   379→                                <div class="ally-action-item step-0 ally-action-item__ready">
+   380→                                    <div role="button" tabindex="0" class="action ally-action" data-uw-reader-content="Press enter to change text align" aria-pressed="false">
+   381→                                        <div class="action__inner">
+   382→                                            <a id="textAlign1" onclick="textAlign1()" style="display: block">
+   383→                                                <div class="action__inner ">
+   384→                                                    <img src="/libs/ACCC/AlignRight.png" alt=" &#x645;&#x62D;&#x627;&#x630;&#x627;&#x629; &#x627;&#x644;&#x646;&#x635;" />
+   385→                                                    &#x645;&#x62D;&#x627;&#x630;&#x627;&#x629; &#x627;&#x644;&#x646;&#x635;
+   386→                                                </div>
+   387→                                            </a>
+   388→                                            <a id="textAlign2" onclick="textAlign2()" style="display: none">
+   389→                                                <div class="action__inner ">
+   390→                                                    <img src="/libs/ACCC/AlignRight.png" alt=" &#x645;&#x62D;&#x627;&#x630;&#x627;&#x629; &#x644;&#x644;&#x64A;&#x645;&#x64A;&#x646;" />
+   391→                                                    &#x645;&#x62D;&#x627;&#x630;&#x627;&#x629; &#x644;&#x644;&#x64A;&#x645;&#x64A;&#x646;
+   392→                                                    <div class="acc-dash me-1 mt-1"></div>
+   393→                                                </div>
+   394→                                            </a>
+   395→                                            <a id="textAlign3" onclick="textAlign3()" style="display: none">
+   396→                                                <div class="action__inner ">
+   397→                                                    <img src="/libs/ACCC/AlignLeft.png" alt=" &#x645;&#x62D;&#x627;&#x630;&#x627;&#x629; &#x644;&#x644;&#x64A;&#x633;&#x627;&#x631;" />
+   398→                                                    &#x645;&#x62D;&#x627;&#x630;&#x627;&#x629; &#x644;&#x644;&#x64A;&#x633;&#x627;&#x631;
+   399→                                                    <div class="d-flex flex-row justify-contetn-between">
+   400→                                                        <div class="acc-dash me-1 mt-1"></div>
+   401→                                                        <div class="acc-dash me-1 mt-1"></div>
+   402→                                                    </div>
+   403→                                                </div>
+   404→                                            </a>
+   405→                                            <a id="textAlign4" onclick="textAlign4()" style="display: none">
+   406→                                                <div class="action__inner ">
+   407→                                                    <img src="/libs/ACCC/AlignCenter.png" alt=" &#x645;&#x62D;&#x627;&#x630;&#x627;&#x629; &#x627;&#x644;&#x648;&#x633;&#x637;" />
+   408→                                                    &#x645;&#x62D;&#x627;&#x630;&#x627;&#x629; &#x627;&#x644;&#x648;&#x633;&#x637;
+   409→                                                    <div class="d-flex flex-row justify-contetn-between">
+   410→                                                        <div class="acc-dash me-1 mt-1"></div>
+   411→                                                        <div class="acc-dash me-1 mt-1"></div>
+   412→                                                        <div class="acc-dash me-1 mt-1"></div>
+   413→                                                    </div>
+   414→                                                </div>
+   415→                                            </a>
+   416→                                            <a id="textAlign5" onclick="textAlign5()" style="display: none">
+   417→                                                <div class="action__inner ">
+   418→                                                    <img src="/libs/ACCC/AlignJustify.png" alt=" &#x645;&#x644;&#x623; &#x627;&#x644;&#x633;&#x637;&#x631;" />
+   419→                                                    &#x645;&#x644;&#x623; &#x627;&#x644;&#x633;&#x637;&#x631;
+   420→                                                    <div class="d-flex flex-row justify-contetn-between">
+   421→                                                        <div class="acc-dash me-1 mt-1"></div>
+   422→                                                        <div class="acc-dash me-1 mt-1"></div>
+   423→                                                        <div class="acc-dash me-1 mt-1"></div>
+   424→                                                        <div class="acc-dash me-1 mt-1"></div>
+   425→                                                    </div>
+   426→                                                </div>
+   427→                                            </a>
+   428→                                        </div>
+   429→                                    </div>
+   430→                                </div>
+   431→                            </div>
+   432→                        </div>
+   433→                    </div>
+   434→                    <div ui-view=""></div>
+   435→                </div>
+   436→            </div>
+   437→            <div class="menu-footer">
+   438→                <a class="btn btn-primary btn-reset" onclick="ResetAll()">
+   439→                    &#x627;&#x639;&#x627;&#x62F;&#x629; &#x627;&#x644;&#x636;&#x628;&#x637;
+   440→                </a>
+   441→            </div>
+   442→        </div>
+   443→    </div>
+   444→</main>
+   445→
+   446→
+   447→
+   448→<body data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0" style="" class="">
+   449→
+   450→    
+   451→<div class="menushadow">
+   452→    <div class="Menub d-none d-md-block">
+   453→        <div class="container">
+   454→            <div class="d-flex flex-row justify-content-between">
+   455→
+   456→                <a href="/ar" class="logoreponsive"> <img src="/images/mainlogo2.png"> </a>
+   457→
+   458→
+   459→                <div class="d-flex flex-row mt-4 ">
+   460→                    
+   461→                    <button class=" btn-search ms-2" type="button" data-bs-toggle="offcanvas"
+   462→                            data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+   463→                        <img src="/images/search-interface-symbol(17).png">
+   464→                    </button>
+   465→                </div>
+   466→            </div>
+   467→        </div>
+   468→    </div>
+   469→
+   470→    <div class="Menub-responsive mx-0 d-md-none position-relative" style="z-index:2;background: #3c3c3c;
+   471→        padding: 13px 2px;">
+   472→
+   473→        <div class="container d-flex justify-content-between align-items-center">
+   474→            <div>
+   475→                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+   476→                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+   477→                            aria-expanded="false" aria-label="Toggle navigation">
+   478→                        <span class="navbar-toggler-icon"></span>
+   479→                    </button>
+   480→                
+   481→            </div>
+   482→
+   483→            <div class="d-flex justify-content-center">
+   484→                <a href="/ar" class="" style="width:200px"> <img class="img-fluid" src="/images/mainlogo2.png"> </a>
+   485→            </div>
+   486→
+   487→            <div class="d-flex justify-content-end">
+   488→                <div class="d-flex flex-row ">
+   489→                    <button class=" btn-search ms-2" type="button" data-bs-toggle="offcanvas"
+   490→                            data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+   491→                        <img src="/images/search-interface-symbol(17).png">
+   492→                    </button>
+   493→                </div>
+   494→            </div>
+   495→
+   496→        </div>
+   497→
+   498→
+   499→
+   500→
+   501→    </div>
+   502→
+   503→    <div class="offcanvas offcanvas-top " tabindex="-1" id="offcanvasTop"
+   504→         aria-labelledby="offcanvasTopLabel">
+   505→        <div class="offcanvas-header">
+   506→            <h5 id="offcanvasTopLabel"> </h5>
+   507→            <h5>البحث في الموقع</h5>
+   508→            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+   509→                    aria-label="Close"></button>
+   510→        </div>
+   511→        <div class="offcanvas-body">
+   512→            <div class="container">
+   513→                <form action="/&#x635;&#x641;&#x62D;&#x629;-&#x627;&#x644;&#x628;&#x62D;&#x62B;/" method="get">
+   514→                    <div class="searchbox">
+   515→                        <div class="d-flex flex-row">
+   516→                            <button class="unstyled-button">
+   517→                                <div class="searchicon">
+   518→                                    <img src="/images/search2.png" alt="Search Icon">
+   519→                                </div>
+   520→                            </button>
+   521→                            <input class="searchinfo" name="term" placeholder="ابحث" required oninvalid="this.setCustomValidity('الحقل مطلوب')" oninput="this.setCustomValidity('')">
+   522→                        </div>
+   523→                    </div>
+   524→
+   525→                </form>
+   526→            </div>
+   527→        </div>
+   528→    </div>
+   529→
+   530→        <div class="mainmenu main-nav">
+   531→            <div class="">
+   532→                <nav class="navbar navbar-expand-lg ">
+   533→                    <div class="container">
+   534→                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+   535→                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+   536→                                aria-expanded="false" aria-label="Toggle navigation">
+   537→                            <span class="navbar-toggler-icon"></span>
+   538→                        </button>
+   539→                        <div class="collapse navbar-collapse justify-content-start" id="navbarSupportedContent">
+   540→                            <ul class="navbar-nav ">
+   541→                                <li class="nav-item hvr-sweep-to-top">
+   542→                                    <a class="nav-link" href="/ar/"> الصفحة الرئيسية </a>
+   543→                                </li>
+   544→                                        <li class="nav-item dropdown hvr-sweep-to-top">
+   545→                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+   546→                                               data-bs-toggle="dropdown" aria-expanded="false">
+   547→                                                &#x639;&#x646; &#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;
+   548→                                            </a>
+   549→                                            <ul class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
+   550→
+   551→                                                    <li>
+   552→                                                        <a class="dropdown-item" href="/&#x639;&#x646;-&#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;/&#x646;&#x628;&#x630;&#x629;-&#x639;&#x646;-&#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;/#"> &#x646;&#x628;&#x630;&#x629; &#x639;&#x646; &#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629; </a>
+   553→                                                    </li>
+   554→                                                    <li>
+   555→                                                        <a class="dropdown-item" href="/&#x639;&#x646;-&#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;/&#x631;&#x624;&#x64A;&#x629;-&#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;/#"> &#x631;&#x624;&#x64A;&#x629; &#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629; </a>
+   556→                                                    </li>
+   557→                                                    <li>
+   558→                                                        <a class="dropdown-item" href="/&#x639;&#x646;-&#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;/&#x631;&#x633;&#x627;&#x644;&#x629;-&#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;/#"> &#x631;&#x633;&#x627;&#x644;&#x629; &#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629; </a>
+   559→                                                    </li>
+   560→                                                    <li>
+   561→                                                        <a class="dropdown-item" href="/&#x639;&#x646;-&#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;/&#x645;&#x62C;&#x644;&#x633;-&#x627;&#x644;&#x623;&#x645;&#x646;&#x627;&#x621;/#"> &#x645;&#x62C;&#x644;&#x633; &#x627;&#x644;&#x623;&#x645;&#x646;&#x627;&#x621; </a>
+   562→                                                    </li>
+   563→                                                    <li>
+   564→                                                        <a class="dropdown-item" href="/&#x639;&#x646;-&#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;/&#x644;&#x62C;&#x646;&#x629;-&#x627;&#x644;&#x625;&#x62F;&#x627;&#x631;&#x629;/#"> &#x644;&#x62C;&#x646;&#x629; &#x627;&#x644;&#x625;&#x62F;&#x627;&#x631;&#x629; </a>
+   565→                                                    </li>
+   566→                                            </ul>
+   567→                                        </li>
+   568→                                        <li class="nav-item dropdown hvr-sweep-to-top">
+   569→                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+   570→                                               data-bs-toggle="dropdown" aria-expanded="false">
+   571→                                                &#x627;&#x644;&#x641;&#x627;&#x626;&#x632;&#x648;&#x646;
+   572→                                            </a>
+   573→                                            <ul class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
+   574→
+   575→                                                    <li>
+   576→                                                        <a class="dropdown-item" href="/&#x627;&#x644;&#x641;&#x627;&#x626;&#x632;&#x648;&#x646;/&#x627;&#x644;&#x641;&#x627;&#x626;&#x632;&#x648;&#x646;-&#x639;&#x646;-&#x641;&#x626;&#x629;-&#x627;&#x644;&#x627;&#x641;&#x631;&#x627;&#x62F;/#"> &#x641;&#x626;&#x629; &#x627;&#x644;&#x623;&#x639;&#x645;&#x627;&#x644; &#x627;&#x644;&#x62A;&#x637;&#x648;&#x639;&#x64A;&#x629; &#x627;&#x644;&#x641;&#x631;&#x62F;&#x64A;&#x629; </a>
+   577→                                                    </li>
+   578→                                                    <li>
+   579→                                                        <a class="dropdown-item" href="/&#x627;&#x644;&#x641;&#x627;&#x626;&#x632;&#x648;&#x646;/&#x627;&#x644;&#x641;&#x627;&#x626;&#x632;&#x648;&#x646;-&#x639;&#x646;-&#x641;&#x626;&#x629;-&#x627;&#x644;&#x627;&#x639;&#x645;&#x627;&#x644;-&#x627;&#x644;&#x62A;&#x637;&#x648;&#x639;&#x64A;&#x629;-&#x627;&#x644;&#x62C;&#x645;&#x627;&#x639;&#x64A;&#x629;/#"> &#x641;&#x626;&#x629; &#x627;&#x644;&#x623;&#x639;&#x645;&#x627;&#x644; &#x627;&#x644;&#x62A;&#x637;&#x648;&#x639;&#x64A;&#x629; &#x627;&#x644;&#x62C;&#x645;&#x627;&#x639;&#x64A;&#x629; </a>
+   580→                                                    </li>
+   581→                                                    <li>
+   582→                                                        <a class="dropdown-item" href="/&#x627;&#x644;&#x641;&#x627;&#x626;&#x632;&#x648;&#x646;/&#x641;&#x626;&#x629;-&#x627;&#x644;&#x623;&#x639;&#x645;&#x627;&#x644;-&#x627;&#x644;&#x62A;&#x637;&#x648;&#x639;&#x64A;&#x629;-&#x627;&#x644;&#x645;&#x624;&#x633;&#x633;&#x64A;&#x629;-&#x627;&#x644;&#x631;&#x628;&#x62D;&#x64A;&#x629;/"> &#x641;&#x626;&#x629; &#x627;&#x644;&#x623;&#x639;&#x645;&#x627;&#x644; &#x627;&#x644;&#x62A;&#x637;&#x648;&#x639;&#x64A;&#x629; &#x627;&#x644;&#x645;&#x624;&#x633;&#x633;&#x64A;&#x629; &#x627;&#x644;&#x631;&#x628;&#x62D;&#x64A;&#x629; </a>
+   583→                                                    </li>
+   584→                                                    <li>
+   585→                                                        <a class="dropdown-item" href="/&#x627;&#x644;&#x641;&#x627;&#x626;&#x632;&#x648;&#x646;/&#x641;&#x626;&#x629;-&#x627;&#x644;&#x627;&#x639;&#x645;&#x627;&#x644;-&#x627;&#x644;&#x62A;&#x637;&#x648;&#x639;&#x64A;&#x629;-&#x627;&#x644;&#x645;&#x624;&#x633;&#x633;&#x64A;&#x629;-&#x627;&#x644;&#x63A;&#x64A;&#x631;-&#x631;&#x628;&#x62D;&#x64A;&#x629;/"> &#x641;&#x626;&#x629; &#x627;&#x644;&#x627;&#x639;&#x645;&#x627;&#x644; &#x627;&#x644;&#x62A;&#x637;&#x648;&#x639;&#x64A;&#x629; &#x627;&#x644;&#x645;&#x624;&#x633;&#x633;&#x64A;&#x629; &#x627;&#x644;&#x63A;&#x64A;&#x631; &#x631;&#x628;&#x62D;&#x64A;&#x629; </a>
+   586→                                                    </li>
+   587→                                            </ul>
+   588→                                        </li>
+   589→                                        <li class="nav-item dropdown hvr-sweep-to-top">
+   590→                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+   591→                                               data-bs-toggle="dropdown" aria-expanded="false">
+   592→                                                &#x62F;&#x644;&#x64A;&#x644; &#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629; &#x648;&#x627;&#x644;&#x62F;&#x644;&#x64A;&#x644; &#x627;&#x644;&#x625;&#x633;&#x62A;&#x631;&#x634;&#x627;&#x62F;&#x64A;
+   593→                                            </a>
+   594→                                            <ul class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
+   595→
+   596→                                                    <li>
+   597→                                                        <a class="dropdown-item" target="_blank" href="/media/4elfelfo/cpa-guide-24-6-20255st-gs-moy-bot.pdf"> &#x62F;&#x644;&#x64A;&#x644; &#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629; </a>
+   598→                                                    </li>
+   599→                                                    <li>
+   600→                                                        <a class="dropdown-item" target="_blank" href="/media/z3dollp3/cpa-guiding-manual-individuals-2025-3-24-6-2025.pdf"> &#x627;&#x644;&#x62F;&#x644;&#x64A;&#x644; &#x627;&#x644;&#x627;&#x633;&#x62A;&#x631;&#x634;&#x627;&#x62F;&#x64A; &#x644;&#x641;&#x626;&#x629; &#x627;&#x644;&#x627;&#x641;&#x631;&#x627;&#x62F; </a>
+   601→                                                    </li>
+   602→                                                    <li>
+   603→                                                        <a class="dropdown-item" target="_blank" href="/media/jtncjx5g/cpa-guiding-manual-profit-organization-2025.pdf"> &#x627;&#x644;&#x62F;&#x644;&#x64A;&#x644; &#x627;&#x644;&#x627;&#x633;&#x62A;&#x631;&#x634;&#x627;&#x62F;&#x64A; &#x644;&#x641;&#x626;&#x629; &#x627;&#x644;&#x645;&#x624;&#x633;&#x633;&#x627;&#x62A; &#x627;&#x644;&#x631;&#x628;&#x62D;&#x64A;&#x629; </a>
+   604→                                                    </li>
+   605→                                                    <li>
+   606→                                                        <a class="dropdown-item" target="_blank" href="/media/y52lskqj/cpa-guiding-manual-nonprofit-organization.pdf"> &#x627;&#x644;&#x62F;&#x644;&#x64A;&#x644; &#x627;&#x644;&#x627;&#x633;&#x62A;&#x631;&#x634;&#x627;&#x62F;&#x64A; &#x644;&#x641;&#x626;&#x629; &#x627;&#x644;&#x645;&#x624;&#x633;&#x633;&#x627;&#x62A; &#x63A;&#x64A;&#x631; &#x627;&#x644;&#x631;&#x628;&#x62D;&#x64A;&#x629; </a>
+   607→                                                    </li>
+   608→                                                    <li>
+   609→                                                        <a class="dropdown-item" target="_blank" href="/media/enyjfmly/cpa-guiding-manual-teams-24-6-2025.pdf"> &#x627;&#x644;&#x62F;&#x644;&#x64A;&#x644; &#x627;&#x644;&#x627;&#x633;&#x62A;&#x631;&#x634;&#x627;&#x62F;&#x64A; &#x644;&#x644;&#x641;&#x631;&#x642; </a>
+   610→                                                    </li>
+   611→                                            </ul>
+   612→                                        </li>
+   613→                                        <li class="nav-item dropdown hvr-sweep-to-top">
+   614→                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+   615→                                               data-bs-toggle="dropdown" aria-expanded="false">
+   616→                                                &#x627;&#x644;&#x645;&#x631;&#x643;&#x632; &#x627;&#x644;&#x625;&#x639;&#x644;&#x627;&#x645;&#x64A;
+   617→                                            </a>
+   618→                                            <ul class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
+   619→
+   620→                                                    <li>
+   621→                                                        <a class="dropdown-item" href="/&#x627;&#x644;&#x645;&#x631;&#x643;&#x632;-&#x627;&#x644;&#x625;&#x639;&#x644;&#x627;&#x645;&#x64A;/&#x627;&#x644;&#x627;&#x62E;&#x628;&#x627;&#x631;/#"> &#x627;&#x644;&#x623;&#x62E;&#x628;&#x627;&#x631; </a>
+   622→                                                    </li>
+   623→                                                    <li>
+   624→                                                        <a class="dropdown-item" href="/&#x627;&#x644;&#x645;&#x631;&#x643;&#x632;-&#x627;&#x644;&#x625;&#x639;&#x644;&#x627;&#x645;&#x64A;/&#x627;&#x644;&#x635;&#x640;&#x640;&#x640;&#x648;&#x631;/#"> &#x627;&#x644;&#x635;&#x648;&#x631; </a>
+   625→                                                    </li>
+   626→                                                    <li>
+   627→                                                        <a class="dropdown-item" href="/&#x627;&#x644;&#x645;&#x631;&#x643;&#x632;-&#x627;&#x644;&#x625;&#x639;&#x644;&#x627;&#x645;&#x64A;/&#x627;&#x644;&#x641;&#x64A;&#x62F;&#x64A;&#x648;&#x647;&#x627;&#x62A;-&#x627;&#x644;&#x62E;&#x627;&#x635;&#x629;-&#x628;&#x627;&#x644;&#x62C;&#x627;&#x626;&#x632;&#x629;/#"> &#x627;&#x644;&#x641;&#x64A;&#x62F;&#x64A;&#x648;&#x647;&#x627;&#x62A; </a>
+   628→                                                    </li>
+   629→                                                    <li>
+   630→                                                        <a class="dropdown-item" href="/ar/&#x642;&#x635;&#x635; &#x627;&#x644;&#x646;&#x62C;&#x627;&#x62D; 1/#"> &#x642;&#x635;&#x635; &#x627;&#x644;&#x646;&#x62C;&#x627;&#x62D; </a>
+   631→                                                    </li>
+   632→                                                    <li>
+   633→                                                        <a class="dropdown-item" href="/&#x627;&#x644;&#x645;&#x631;&#x643;&#x632;-&#x627;&#x644;&#x625;&#x639;&#x644;&#x627;&#x645;&#x64A;/&#x625;&#x62D;&#x635;&#x627;&#x626;&#x64A;&#x627;&#x62A;/#"> &#x625;&#x62D;&#x635;&#x627;&#x626;&#x64A;&#x627;&#x62A; </a>
+   634→                                                    </li>
+   635→                                            </ul>
+   636→                                        </li>
+   637→                                    <a class="nav-link loginbtn  d-lg-none  d-xl-none" href="/ar/login-page/">
+   638→                                        <img src="/images/account(2).png"> تسجيل الدخول
+   639→                                    </a>
+   640→                            </ul>
+   641→                        </div>
+   642→
+   643→
+   644→
+   645→                            <a class="nav-link loginbtn  d-none  d-sm-none d-md-block hide" href="/&#x62A;&#x633;&#x62C;&#x64A;&#x644;-&#x627;&#x644;&#x62F;&#x62E;&#x648;&#x644;/"> <img src="/images/account(2).png">&#x62A;&#x633;&#x62C;&#x64A;&#x644; &#x627;&#x644;&#x62F;&#x62E;&#x648;&#x644;</a>
+   646→
+   647→
+   648→                    </div>
+   649→
+   650→                </nav>
+   651→            </div>
+   652→        </div>
+   653→
+   654→</div>
+   655→
+   656→
+   657→    <section class="mainslide">
+   658→        <div id="carouselExampleCaptions" class="carousel slide carousel-fade" data-bs-ride="carousel">
+   659→            <div class="maindots carousel-indicators">
+   660→
+   661→                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+   662→                            aria-current="true" aria-label="Slide 0"></button>
+   663→                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" class=""
+   664→                            aria-current="true" aria-label="Slide 1"></button>
+   665→                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" class=""
+   666→                            aria-current="true" aria-label="Slide 2"></button>
+   667→            </div>
+   668→
+   669→
+   670→            <div class="carousel-inner">
+   671→                    <div class="carousel-item active">
+   672→                        <img src="/media/yatb50rg/slide3v3.png?width=1390&amp;height=779&amp;mode=crop" class="d-block w-100 d-none  d-sm-none d-md-block" alt="...">
+   673→                        <img src="/media/hmpgiax2/slide1mobile.png" class="d-block w-100  d-lg-none  d-xl-none responsiveimg"
+   674→                             alt="...">
+   675→                        <div class="carousel-caption d-none d-md-block  wow fadeInLeft">
+   676→                            <p class="slidetitle">
+   677→                                &quot;&#x627;&#x644;&#x639;&#x645;&#x644;&#x64F; &#x627;&#x644;&#x62A;&#x637;&#x648;&#x639;&#x64A;&#x64F; &#x644;&#x627; &#x64A;&#x635;&#x646;&#x639;&#x64F; &#x645;&#x648;&#x627;&#x637;&#x646;&#x627; &#x641;&#x627;&#x639;&#x644;&#x627;&#x64B; &#x641;&#x642;&#x637;&#x652; &#x60C; &#x628;&#x644;&#x652; &#x64A;&#x628;&#x646;&#x64A; &#x645;&#x62C;&#x62A;&#x645;&#x639;&#x627; &#x645;&#x62A;&#x645;&#x627;&#x633;&#x643;&#x627; &#x60C; &#x648;&#x647;&#x648;&#x64E; &#x631;&#x643;&#x64A;&#x632;&#x629;&#x64C; &#x623;&#x633;&#x627;&#x633;&#x64A;&#x629;&#x64C; &#x641;&#x64A; &#x627;&#x644;&#x648;&#x62D;&#x62F;&#x629;&#x650; &#x648;&#x627;&#x644;&#x62A;&#x643;&#x627;&#x641;&#x644;&#x650; &#x628;&#x64A;&#x646;&#x64E; &#x627;&#x644;&#x645;&#x648;&#x627;&#x637;&#x646;&#x64A;&#x646;&#x64E; &#x628;&#x645;&#x62E;&#x62A;&#x644;&#x641;&#x650; &#x623;&#x639;&#x645;&#x627;&#x631;&#x647;&#x645;&#x652;&quot;
+   678→                            </p>
+   679→                            <p class="font-bold slidep">
+   680→                                &#x635;&#x627;&#x62D;&#x628; &#x627;&#x644;&#x633;&#x645;&#x648; &#x627;&#x644;&#x645;&#x644;&#x643;&#x64A; &#x627;&#x644;&#x623;&#x645;&#x64A;&#x631; &#x627;&#x644;&#x62D;&#x633;&#x64A;&#x646; &#x628;&#x646; &#x639;&#x628;&#x62F;&#x627;&#x644;&#x644;&#x647; &#x627;&#x644;&#x62B;&#x627;&#x646;&#x64A;&#x60C; &#x648;&#x644;&#x64A; &#x627;&#x644;&#x639;&#x647;&#x62F; &#x627;&#x644;&#x645;&#x639;&#x638;&#x645;
+   681→                            </p>
+   682→                        </div>
+   683→                    </div>
+   684→                    <div class="carousel-item ">
+   685→                        <img src="/media/5u3b5ywe/slidev3.png?width=1390&amp;height=779&amp;mode=crop" class="d-block w-100 d-none  d-sm-none d-md-block" alt="...">
+   686→                        <img src="/media/4nxke1s5/slide11mobile.png" class="d-block w-100  d-lg-none  d-xl-none responsiveimg"
+   687→                             alt="...">
+   688→                        <div class="carousel-caption d-none d-md-block  wow fadeInLeft">
+   689→                            <p class="slidetitle">
+   690→                                &quot;&#x627;&#x644;&#x639;&#x645;&#x644;&#x64F; &#x627;&#x644;&#x62A;&#x637;&#x648;&#x639;&#x64A;&#x64F; &#x644;&#x627; &#x64A;&#x635;&#x646;&#x639;&#x64F; &#x645;&#x648;&#x627;&#x637;&#x646;&#x627; &#x641;&#x627;&#x639;&#x644;&#x627;&#x64B; &#x641;&#x642;&#x637;&#x652; &#x60C; &#x628;&#x644;&#x652; &#x64A;&#x628;&#x646;&#x64A; &#x645;&#x62C;&#x62A;&#x645;&#x639;&#x627; &#x645;&#x62A;&#x645;&#x627;&#x633;&#x643;&#x627; &#x60C; &#x648;&#x647;&#x648;&#x64E; &#x631;&#x643;&#x64A;&#x632;&#x629;&#x64C; &#x623;&#x633;&#x627;&#x633;&#x64A;&#x629;&#x64C; &#x641;&#x64A; &#x627;&#x644;&#x648;&#x62D;&#x62F;&#x629;&#x650; &#x648;&#x627;&#x644;&#x62A;&#x643;&#x627;&#x641;&#x644;&#x650; &#x628;&#x64A;&#x646;&#x64E; &#x627;&#x644;&#x645;&#x648;&#x627;&#x637;&#x646;&#x64A;&#x646;&#x64E; &#x628;&#x645;&#x62E;&#x62A;&#x644;&#x641;&#x650; &#x623;&#x639;&#x645;&#x627;&#x631;&#x647;&#x645;&#x652;&quot;
+   691→                            </p>
+   692→                            <p class="font-bold slidep">
+   693→                                &#x635;&#x627;&#x62D;&#x628; &#x627;&#x644;&#x633;&#x645;&#x648; &#x627;&#x644;&#x645;&#x644;&#x643;&#x64A; &#x627;&#x644;&#x623;&#x645;&#x64A;&#x631; &#x627;&#x644;&#x62D;&#x633;&#x64A;&#x646; &#x628;&#x646; &#x639;&#x628;&#x62F;&#x627;&#x644;&#x644;&#x647; &#x627;&#x644;&#x62B;&#x627;&#x646;&#x64A;&#x60C; &#x648;&#x644;&#x64A; &#x627;&#x644;&#x639;&#x647;&#x62F; &#x627;&#x644;&#x645;&#x639;&#x638;&#x645;
+   694→                            </p>
+   695→                        </div>
+   696→                    </div>
+   697→                    <div class="carousel-item ">
+   698→                        <img src="/media/aoifszfd/slide2v3.png?width=1390&amp;height=779&amp;mode=crop" class="d-block w-100 d-none  d-sm-none d-md-block" alt="...">
+   699→                        <img src="/media/btcnl4dq/slide2mobile.png" class="d-block w-100  d-lg-none  d-xl-none responsiveimg"
+
+[showing lines 200-699 of 2746; use offset=700 with limit to continue reading]
